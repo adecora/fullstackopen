@@ -28,3 +28,30 @@ end note
 ```
 
 ![new note diagram](./images/new_note.png)
+
+## Exercise 0.5
+
+Create a diagram where the user goes to the [single page app](https://studies.cs.helsinki.fi/exampleapp/spa)
+
+```
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+server-->browser: spa.js
+
+note over browser:
+browser js-code requests JSON data from server 
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: [{"content":"new note","date":"2021-11-04T08:22:37.978Z"}, ...]
+
+note over browser:
+browser executes the event handler
+that renders notes to display
+end note
+```
+
+![single page app diagram](./images/spa.png)
