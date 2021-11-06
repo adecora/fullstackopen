@@ -22,6 +22,10 @@ const App = () => {
         setFilterCountry(event.target.value.toLowerCase());
     };
 
+    const handleShowcountry = (event) => {
+        setFilterCountry(event.target.value.toLowerCase());
+    };
+
     return (
         <div>
             <div>
@@ -29,7 +33,10 @@ const App = () => {
                 <input value={filterCountry} onChange={handleFilterCountry} />
             </div>
 
-            <Countries countries={countriesToShow} />
+            <Countries
+                countries={countriesToShow}
+                showCountry={handleShowcountry}
+            />
         </div>
     );
 };

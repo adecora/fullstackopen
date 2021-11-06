@@ -23,7 +23,7 @@ const Country = ({ country }) => {
     );
 };
 
-const Countries = ({ countries }) => {
+const Countries = ({ countries, showCountry }) => {
     return (
         <div>
             {countries.length > 10 ? (
@@ -34,7 +34,12 @@ const Countries = ({ countries }) => {
                         a > b ? 1 : a < b ? -1 : 0
                     )
                     .map(({ name: { common } }) => (
-                        <div key={common}>{common}</div>
+                        <div key={common}>
+                            {common}{" "}
+                            <button value={common} onClick={showCountry}>
+                                show
+                            </button>
+                        </div>
                     ))
             ) : (
                 <Country country={countries.pop()} />
