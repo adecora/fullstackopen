@@ -1,5 +1,41 @@
 import React, { useState } from "react";
 
+const Filter = ({ name, onChange }) => (
+    <div>
+        filter show with <input value={name} onChange={onChange} />
+    </div>
+);
+
+const PersonForm = ({
+    onSubmit,
+    name,
+    onChangeName,
+    number,
+    onChangeNumber,
+}) => (
+    <form onSubmit={onSubmit}>
+        <div>
+            name: <input value={name} onChange={onChangeName} />
+        </div>
+        <div>
+            number: <input value={number} onChange={onChangeNumber} />
+        </div>
+        <div>
+            <button type="submit">add</button>
+        </div>
+    </form>
+);
+
+const Persons = ({ persons }) => (
+    <>
+        {persons.map((person) => (
+            <div key={person.id}>
+                {person.name} {person.number}
+            </div>
+        ))}
+    </>
+);
+
 const App = () => {
     const [persons, setPersons] = useState([
         { name: "Arto Hellas", number: "040-123456", id: 1 },
@@ -54,29 +90,23 @@ const App = () => {
 
     return (
         <div>
-            <h1>Phonebook</h1>
-            <div>
-                filter show with <input onChange={handleFilterName} />
-            </div>
-            <h2>add a new</h2>
-            <form onSubmit={addNumber}>
-                <div>
-                    name: <input value={newName} onChange={handleNameChange} />
-                </div>
-                <div>
-                    number:{" "}
-                    <input value={newNumber} onChange={handleNumberChange} />
-                </div>
-                <div>
-                    <button type="submit">add</button>
-                </div>
-            </form>
-            <h2>Numbers</h2>
-            {personsToShow.map((person) => (
-                <div key={person.id}>
-                    {person.name} {person.number}
-                </div>
-            ))}
+            <h2>Phonebook</h2>
+
+            <Filter name={filterName} onChange={handleFilterName} />
+
+            <h3>Add a new</h3>
+
+            <PersonForm
+                onSubmit={addNumber}
+                name={newName}
+                onChangeName={handleNameChange}
+                number={newNumber}
+                onChangeNumber={handleNumberChange}
+            />
+
+            <h3>Numbers</h3>
+
+            <Persons persons={personsToShow} />
         </div>
     );
 };
