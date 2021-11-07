@@ -45,6 +45,7 @@ const App = () => {
     const [newNumber, setNewNumber] = useState("");
     const [filterName, setFilterName] = useState("");
     const [notification, setNotification] = useState(null);
+    const [notificationType, setType] = useState(null);
 
     useEffect(() => {
         personService
@@ -79,6 +80,7 @@ const App = () => {
                         setNotification(
                             `${returnedPerson.name} number changed`
                         );
+                        setType("notification");
                         setPersons(
                             persons.map((person) =>
                                 person.name !== newName
@@ -91,6 +93,21 @@ const App = () => {
 
                         setTimeout(() => {
                             setNotification(null);
+                            setType(null);
+                        }, 3000);
+                    })
+                    .catch((err) => {
+                        setNotification(
+                            `Information of ${person.name} has already been removed from the server`
+                        );
+                        setType("error");
+                        setPersons(persons.filter((p) => p.id !== person.id));
+                        setNewName("");
+                        setNewNumber("");
+
+                        setTimeout(() => {
+                            setNotification(null);
+                            setType(null);
                         }, 3000);
                     });
             }
@@ -102,12 +119,14 @@ const App = () => {
 
             personService.create(newPerson).then((returnedPerson) => {
                 setNotification(`Added ${returnedPerson.name}`);
+                setType("notification");
                 setPersons(persons.concat(returnedPerson));
                 setNewName("");
                 setNewNumber("");
 
                 setTimeout(() => {
                     setNotification(null);
+                    setType(null);
                 }, 3000);
             });
         }
@@ -138,7 +157,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={notification} />
+            <Notification message={notification} type={notificationType} />
             <Filter name={filterName} onChange={handleFilterName} />
 
             <h3>Add a new</h3>
