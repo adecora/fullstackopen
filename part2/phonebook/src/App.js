@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const Filter = ({ name, onChange }) => (
@@ -43,6 +44,7 @@ const App = () => {
     const [newName, setNewName] = useState("");
     const [newNumber, setNewNumber] = useState("");
     const [filterName, setFilterName] = useState("");
+    const [notification, setNotification] = useState(null);
 
     useEffect(() => {
         personService
@@ -64,7 +66,6 @@ const App = () => {
                 ? alert("name must not be empty")
                 : alert("number must not be empty");
         } else if (persons.map((person) => person.name).includes(newName)) {
-            
             if (
                 window.confirm(
                     `${newName} is already added to phonebook, replace the old number with a new one?`
@@ -75,6 +76,9 @@ const App = () => {
                 personService
                     .update(person.id, newPerson)
                     .then((returnedPerson) => {
+                        setNotification(
+                            `${returnedPerson.name} number changed`
+                        );
                         setPersons(
                             persons.map((person) =>
                                 person.name !== newName
@@ -84,6 +88,10 @@ const App = () => {
                         );
                         setNewName("");
                         setNewNumber("");
+
+                        setTimeout(() => {
+                            setNotification(null);
+                        }, 3000);
                     });
             }
         } else {
@@ -93,9 +101,14 @@ const App = () => {
             };
 
             personService.create(newPerson).then((returnedPerson) => {
+                setNotification(`Added ${returnedPerson.name}`);
                 setPersons(persons.concat(returnedPerson));
                 setNewName("");
                 setNewNumber("");
+
+                setTimeout(() => {
+                    setNotification(null);
+                }, 3000);
             });
         }
     };
@@ -125,7 +138,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-
+            <Notification message={notification} />
             <Filter name={filterName} onChange={handleFilterName} />
 
             <h3>Add a new</h3>
