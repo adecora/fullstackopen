@@ -64,9 +64,28 @@ const App = () => {
                 ? alert("name must not be empty")
                 : alert("number must not be empty");
         } else if (persons.map((person) => person.name).includes(newName)) {
-            alert(`${newName} is already added to phonebook`);
-            setNewName("");
-            setNewNumber("");
+            
+            if (
+                window.confirm(
+                    `${newName} is already added to phonebook, replace the old number with a new one?`
+                )
+            ) {
+                const person = persons.find((p) => p.name === newName);
+                const newPerson = { ...person, number: newNumber };
+                personService
+                    .update(person.id, newPerson)
+                    .then((returnedPerson) => {
+                        setPersons(
+                            persons.map((person) =>
+                                person.name !== newName
+                                    ? person
+                                    : returnedPerson
+                            )
+                        );
+                        setNewName("");
+                        setNewNumber("");
+                    });
+            }
         } else {
             const newPerson = {
                 name: newName,

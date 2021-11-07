@@ -12,9 +12,14 @@ const create = (newPerson) => {
     return request.then((response) => response.data);
 };
 
+const update = (id, newPerson) => {
+    const request = axios.put(`${baseUrl}/${id}`, newPerson);
+    return request.then((response) => response.data);
+};
+
 const remove = (id) => {
     return axios.delete(`${baseUrl}/${id}`);
 };
 
-const services = { getAll, create, remove };
+const services = { getAll, create, update, remove };
 export default services;
