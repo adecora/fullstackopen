@@ -27,11 +27,12 @@ const PersonForm = ({
     </form>
 );
 
-const Persons = ({ persons }) => (
+const Persons = ({ persons, onClick }) => (
     <>
         {persons.map((person) => (
             <div key={person.id}>
-                {person.name} {person.number}
+                {person.name} {person.number}{" "}
+                <button onClick={onClick(person)}>delete</button>
             </div>
         ))}
     </>
@@ -92,6 +93,16 @@ const App = () => {
         setFilterName(event.target.value.toLowerCase());
     };
 
+    const deleteUser = ({ name, id }) => {
+        return () => {
+            if (window.confirm(`Delete ${name} ?`)) {
+                personService.remove(id).then((_) => {
+                    setPersons(persons.filter((person) => person.id !== id));
+                });
+            }
+        };
+    };
+
     return (
         <div>
             <h2>Phonebook</h2>
@@ -110,7 +121,7 @@ const App = () => {
 
             <h3>Numbers</h3>
 
-            <Persons persons={personsToShow} />
+            <Persons persons={personsToShow} onClick={deleteUser} />
         </div>
     );
 };
