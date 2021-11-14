@@ -117,18 +117,31 @@ const App = () => {
                 number: newNumber,
             };
 
-            personService.create(newPerson).then((returnedPerson) => {
-                setNotification(`Added ${returnedPerson.name}`);
-                setType("notification");
-                setPersons(persons.concat(returnedPerson));
-                setNewName("");
-                setNewNumber("");
+            personService
+                .create(newPerson)
+                .then((returnedPerson) => {
+                    setNotification(`Added ${returnedPerson.name}`);
+                    setType("notification");
+                    setPersons(persons.concat(returnedPerson));
+                    setNewName("");
+                    setNewNumber("");
 
-                setTimeout(() => {
-                    setNotification(null);
-                    setType(null);
-                }, 3000);
-            });
+                    setTimeout(() => {
+                        setNotification(null);
+                        setType(null);
+                    }, 3000);
+                })
+                .catch((error) => {
+                    setNotification(error.response.data.error);
+                    setType("error");
+                    setNewName("");
+                    setNewNumber("");
+
+                    setTimeout(() => {
+                        setNotification(null);
+                        setType(null);
+                    }, 3000);
+                });
         }
     };
 
