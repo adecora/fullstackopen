@@ -96,12 +96,17 @@ const App = () => {
                             setType(null);
                         }, 3000);
                     })
-                    .catch((err) => {
-                        setNotification(
-                            `Information of ${person.name} has already been removed from the server`
-                        );
+                    .catch((error) => {
+                        if (error.response.status === 404) {
+                            setNotification(
+                                `Information of ${person.name} has already been removed from the server`
+                            );
+                            setPersons(persons.filter((p) => p.id !== person.id));
+                        } else if (error.response.status === 400) {
+                            setNotification(error.response.data.error);
+                        }
+                        
                         setType("error");
-                        setPersons(persons.filter((p) => p.id !== person.id));
                         setNewName("");
                         setNewNumber("");
 
