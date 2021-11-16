@@ -1,0 +1,25 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "freeCodeCamp",
+    "author": "Quincy Larson",
+    "url": "https://www.freecodecamp.org/",
+    "likes": 1000000
+}
+
+###
+
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "The Odin Project",
+    "author": "Erik Trautman",
+    "url": "https://www.theodinproject.com/",
+    "likes": 1000000
+}
+
+###
+
+GET http://localhost:3003/api/blogs
