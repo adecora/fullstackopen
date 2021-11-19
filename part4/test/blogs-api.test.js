@@ -10,6 +10,7 @@ beforeAll(async () => {
   await Blog.insertMany(helper.listWithBlogs)
 })
 
+
 describe('when there is initially some blogs saved', () => {
 
   test('blogs are returned as json', async () => {
@@ -111,6 +112,7 @@ describe('adding a new blog', () => {
 
 })
 
+
 describe('deletion of a blog', () => {
 
   test('suecceeds with status code 204 if id is valid', async () => {
@@ -126,6 +128,30 @@ describe('deletion of a blog', () => {
 
     const titles = blogsAtEnd.map(b => b.title)
     expect(titles).not.toContain(blogToDelete.title)
+  })
+
+})
+
+describe('update of a blog', () => {
+
+  test('succeeds updating likes if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const blog = {
+      title: blogToUpdate.title,
+      author: blogToUpdate.author,
+      url: blogToUpdate.url,
+      likes: blogToUpdate.likes + 5
+    }
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.likes).toBe(blogToUpdate.likes + 5)
   })
 
 })
