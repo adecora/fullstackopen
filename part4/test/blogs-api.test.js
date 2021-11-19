@@ -32,6 +32,28 @@ test('id property is on blogs returned', async () => {
   expect(response.body[0].id).toBeDefined()
 })
 
+test('added a valid blog', async () => {
+  const newBlog = {
+    title: 'freeCodeCamp',
+    author: 'Quincy Larson',
+    url: 'https://www.freecodecamp.org/',
+    likes: 500
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.listWithBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(b => b.title)
+  expect(titles).toContain('freeCodeCamp')
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
