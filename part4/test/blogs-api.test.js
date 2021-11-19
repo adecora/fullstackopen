@@ -69,6 +69,42 @@ test('blog wihout likes property, default value to 0', async () => {
   expect(response.body.likes).toBe(0)
 })
 
+test('missing title in blog post request', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const newBlog = {
+    author: 'Quincy Larson',
+    url: 'https://www.freecodecamp.org/',
+    likes: 500
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+})
+
+test('missing url in blog post request', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+
+  const newBlog = {
+    title: 'freeCodeCamp',
+    author: 'Quincy Larson',
+    likes: 500
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
