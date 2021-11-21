@@ -38,6 +38,24 @@ describe('when there is initially some blogs saved', () => {
 
 describe('adding a new blog', () => {
 
+  let token
+
+  beforeAll(async () => {
+    await User.deleteMany({})
+    const initialUsers = await helper.initialUsers()
+    await User.insertMany(initialUsers)
+    const user = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(user)
+
+    token = `Bearer ${response.body.token}`
+  })
+
   beforeEach(async () => {
     await Blog.deleteMany({})
     await Blog.insertMany(helper.listWithBlogs)
@@ -53,6 +71,7 @@ describe('adding a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -73,6 +92,7 @@ describe('adding a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -95,6 +115,7 @@ describe('adding a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(newBlog)
       .expect(400)
 
@@ -113,6 +134,7 @@ describe('adding a new blog', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set({ Authorization: token })
       .send(newBlog)
       .expect(400)
 
@@ -120,6 +142,23 @@ describe('adding a new blog', () => {
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.listWithBlogs.length)
+  })
+
+  test('fails with status code 401 if no token is provided', async () => {
+    const newBlog = {
+      title: 'freeCodeCamp',
+      author: 'Quincy Larson',
+      url: 'https://www.freecodecamp.org/',
+      likes: 500
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .set({ Authorization: null })
+      .send(newBlog)
+      .expect(401)
+
+    expect(response.body.error).toContain('jwt must be provided')
   })
 
 })
