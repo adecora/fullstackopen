@@ -68,11 +68,13 @@ const initialUsers = async () => ([
   {
     name: 'admin',
     username: 'admin',
+    password: 'admin',
     passwordHash: await bcrypt.hash('admin', 10)
   },
   {
     name: 'root',
     username: 'root',
+    password: 'root',
     passwordHash: await bcrypt.hash('root', 10)
   }
 ])

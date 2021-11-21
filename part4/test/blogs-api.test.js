@@ -310,6 +310,61 @@ describe('adding a new user', () => {
 
 })
 
+
+describe('user login', () => {
+
+  let initialUsers
+
+  beforeAll(async () => {
+    await User.deleteMany({})
+    initialUsers = await helper.initialUsers()
+    await User.insertMany(initialUsers)
+  })
+
+  test('succeed login', async () => {
+    const loginUser = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(loginUser)
+      .expect(200)
+
+    expect(response.body).toHaveProperty('token')
+  })
+
+  test('fails with status code 401 if username is not valid', async () => {
+    const loginUser = {
+      username: `${initialUsers[0].username}_invalid`,
+      password: initialUsers[0].password
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(loginUser)
+      .expect(401)
+
+    expect(response.body.error).toBe('invalid username')
+  })
+
+  test('fails with status code 401 if password is not valid', async () => {
+    const loginUser = {
+      username: initialUsers[0].username,
+      password: `${initialUsers[0].password}_invalid`
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(loginUser)
+      .expect(401)
+
+    expect(response.body.error).toBe('invalid password')
+  })
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })
