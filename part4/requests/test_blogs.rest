@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkZWNvcmEiLCJpZCI6IjYxOWE5MTM5MTMzMWZkYWVmMWQ4NjhlYiIsImlhdCI6MTYzNzUxOTczOX0.uMHOR_hgW2r7wzyqeviP1pMxUBQnz9OHhefzptYriOM
 
 {
     "title": "freeCodeCamp",
@@ -12,6 +13,7 @@ Content-Type: application/json
 
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkZWNvcmEiLCJpZCI6IjYxOWE5MTM5MTMzMWZkYWVmMWQ4NjhlYiIsImlhdCI6MTYzNzUxOTczOX0.uMHOR_hgW2r7wzyqeviP1pMxUBQnz9OHhefzptYriOM
 
 {
     "title": "The Odin Project",
@@ -38,4 +40,14 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3003/api/blogs/6197ca63c5aa6d1b37f2aaa3
+DELETE http://localhost:3003/api/blogs/619a91cc1331fdaef1d868f8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkZWNvcmEiLCJpZCI6IjYxOWE5MTM5MTMzMWZkYWVmMWQ4NjhlYiIsImlhdCI6MTYzNzUxOTczOX0.uMHOR_hgW2r7wzyqeviP1pMxUBQnz9OHhefzptYriOM
+
+###
+
+DELETE http://localhost:3003/api/blogs/619a91cc1331fdaef1d868f8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWQiOiI2MTlhOTE0ZTEzMzFmZGFlZjFkODY4ZWUiLCJpYXQiOjE2Mzc1MTk3OTV9.rFMNDDW9DcVVyl-qyN3ucu2cgLKhKEYOPC5xShiLeNU
+
+###
+
+DELETE http://localhost:3003/api/blogs/619a91c91331fdaef1d868f4

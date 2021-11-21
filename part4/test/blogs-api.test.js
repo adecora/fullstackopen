@@ -166,17 +166,46 @@ describe('adding a new blog', () => {
 
 describe('deletion of a blog', () => {
 
-  beforeAll(async () => {
+  let initialUsers, token
+
+  beforeEach(async () => {
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.listWithBlogs)
+
+    await User.deleteMany({})
+    initialUsers = await helper.initialUsers()
+    await User.insertMany(initialUsers)
+    const user = {
+      username: initialUsers[0].username,
+      password: initialUsers[0].password
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(user)
+
+    token = `Bearer ${response.body.token}`
+
+    for (let blog of helper.listWithBlogs) {
+      await api
+        .post('/api/blogs')
+        .set({ Authorization: token })
+        .send({
+          title: blog.title,
+          author: blog.author,
+          url: blog.url,
+          likes: blog.likes
+        })
+
+    }
   })
 
-  test('suecceeds with status code 204 if id is valid', async () => {
+  test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: token })
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
@@ -184,6 +213,45 @@ describe('deletion of a blog', () => {
 
     const titles = blogsAtEnd.map(b => b.title)
     expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test('fails with status code 401 if no token is provided', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    const response = await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: null })
+      .expect(401)
+
+    expect(response.body.error).toContain('jwt must be provided')
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+  })
+
+  test('fails with status code 401 if a user try to delete not his blog', async () => {
+    const user = {
+      username: initialUsers[1].username,
+      password: initialUsers[1].password
+    }
+
+    const response = await api
+      .post('/api/login')
+      .send(user)
+
+    const badUserToken = `Bearer ${response.body.token}`
+
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set({ Authorization: badUserToken })
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
   })
 
 })
