@@ -238,6 +238,76 @@ describe('adding a new user', () => {
     expect(usernames).toContain(newUser.username)
   })
 
+  test('fails with status code 400 if missing username', async () => {
+    const newUser = {
+      name: 'developer',
+      password: '12345'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    expect(response.body.error).toContain('Path `username` is required')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(initialUsers.length)
+  })
+
+  test('fails with status code 400 if missing password', async () => {
+    const newUser = {
+      name: 'developer',
+      username: 'dev'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    expect(response.body.error).toContain('Path `password` is required')
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(initialUsers.length)
+  })
+
+  test('fails with status code 400 if username is shorter than 3 characters long', async () => {
+    const newUser = {
+      name: 'developer',
+      username: 'de',
+      password: '12345'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    expect(response.body.error).toContain(`Path \`username\` (\`${newUser.username}\`) is shorter than the minimum allowed length (3).`)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(initialUsers.length)
+  })
+
+  test('fails with status code 400 if password is shorter than 3 characters long', async () => {
+    const newUser = {
+      name: 'developer',
+      username: 'dev',
+      password: '12'
+    }
+
+    const response = await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    expect(response.body.error).toContain(`Path \`password\` (\`${newUser.password}\`) is shorter than the minimum allowed length (3).`)
+
+    const usersAtEnd = await helper.usersInDb()
+    expect(usersAtEnd).toHaveLength(initialUsers.length)
+  })
+
 })
 
 afterAll(() => {
