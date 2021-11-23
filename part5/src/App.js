@@ -8,7 +8,7 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -44,11 +44,11 @@ const App = () => {
         setPassword('')
       })
       .catch((_error) => {
-        setErrorMessage('wrong username or password')
+        setNotification('wrong username or password')
         setUsername('')
         setPassword('')
         setTimeout(() => {
-          setErrorMessage(null)
+          setNotification(null)
         }, 3000)
       })
   }
@@ -69,10 +69,14 @@ const App = () => {
     blogService
       .create(blog)
       .then(returnedBlog => {
+        setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setBlogs(blogs.concat(returnedBlog))
         setTitle('')
         setAuthor('')
         setUrl('')
+        setTimeout(() => {
+          setNotification(null)
+        }, 3000)
       })
       .catch(error => {
         console.log(error)
@@ -81,10 +85,12 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={errorMessage} />
+
       {user === null
         ? (
           <Login
+            message={notification}
+            type='error'
             onSubmit={handleLogin}
             username={username}
             onChangeUsername={({ target }) => setUsername(target.value)}
@@ -95,6 +101,7 @@ const App = () => {
         : (
           <>
             <h2>blogs</h2>
+            <Notification message={notification} type='notification' />
             <div>
               {user.name} logged in { }
               <button onClick={handleLogout}>logout</button>
