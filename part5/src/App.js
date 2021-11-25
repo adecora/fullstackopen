@@ -10,6 +10,7 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
   const [user, setUser] = useState(null)
 
 
@@ -56,15 +57,42 @@ const App = () => {
     blogService
       .create(blog)
       .then(returnedBlog => {
+        console.log(returnedBlog)
         setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
+        setNotificationType("notification")
         setBlogs(blogs.concat(returnedBlog))
 
         setTimeout(() => {
           setNotification(null)
+          setNotificationType(null)
         }, 3000)
       })
       .catch(error => {
         console.log(error)
+      })
+  }
+
+  const incLike = (id, changedBlog) => {
+    console.log(id, changedBlog)
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        console.log(returnedBlog)
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        console.log(error)
+
+        setNotification(
+          `Blog '${changedBlog.title}' was already removed from the server`
+        )
+        setNotificationType("error")
+
+        setTimeout(() => {
+          setNotification(null)
+          setNotificationType(null)
+        }, 3000)
+        setBlogs(blogs.filter(blog => blog.id !== id))
       })
   }
 
@@ -81,7 +109,7 @@ const App = () => {
         : (
           <>
             <h2>blogs</h2>
-            <Notification message={notification} type='notification' />
+            <Notification message={notification} type={notificationType} />
             <div>
               {user.name} logged in { }
               <button onClick={handleLogout}>logout</button>
@@ -92,7 +120,7 @@ const App = () => {
               />
             </Togglable>
             {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
+              <Blog key={blog.id} blog={blog} updateLike={incLike} />
             )}
           </>
         )
