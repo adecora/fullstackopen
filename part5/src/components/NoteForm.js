@@ -1,25 +1,37 @@
-import React from 'react'
+import React, { useState } from 'react'
+
 const NoteForm = ({
-  onSubmit,
-  title,
-  onChangeTitle,
-  author,
-  onChangeAuthor,
-  url,
-  onChangeUrl
+  createBlog,
 }) => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlog = (event) => {
+    event.preventDefault()
+
+    createBlog({
+      title,
+      author,
+      url
+    })
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
 
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={addBlog}>
         <div>
           title:
           <input
             type="text"
             value={title}
             name="Title"
-            onChange={onChangeTitle}
+            onChange={({ target }) => setTitle(target.value)}
           />
         </div>
         <div>
@@ -28,7 +40,7 @@ const NoteForm = ({
             type="text"
             value={author}
             name="Author"
-            onChange={onChangeAuthor}
+            onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
@@ -37,7 +49,7 @@ const NoteForm = ({
             type="text"
             value={url}
             name="Url"
-            onChange={onChangeUrl}
+            onChange={({ target }) => setUrl(target.value)}
           />
         </div>
         <button type="submit">create</button>

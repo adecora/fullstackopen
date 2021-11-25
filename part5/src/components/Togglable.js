@@ -12,7 +12,7 @@ const Togglable = (props) => {
 
   return (
     <div>
-      <div style={{ ...hideWhenVisible, 'margin-top': '0.83em' }}>
+      <div style={{ ...hideWhenVisible, marginTop: '0.83em' }}>
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>

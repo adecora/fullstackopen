@@ -10,12 +10,8 @@ import loginService from './services/login'
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -32,22 +28,19 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = (event) => {
-    event.preventDefault()
-    loginService.login({ username, password })
+  const handleLogin = (userObject) => {
+    loginService
+      .login(userObject)
       .then(user => {
         window.localStorage.setItem(
           'loggedBlogappUser', JSON.stringify(user)
         )
         setUser(user)
         blogService.setToken(user.token)
-        setUsername('')
-        setPassword('')
       })
       .catch((_error) => {
         setNotification('wrong username or password')
-        setUsername('')
-        setPassword('')
+
         setTimeout(() => {
           setNotification(null)
         }, 3000)
@@ -59,22 +52,13 @@ const App = () => {
     setUser(null)
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blog = {
-      title,
-      author,
-      url
-    }
-
+  const addBlog = (blog) => {
     blogService
       .create(blog)
       .then(returnedBlog => {
         setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+
         setTimeout(() => {
           setNotification(null)
         }, 3000)
@@ -91,12 +75,7 @@ const App = () => {
         ? (
           <Login
             message={notification}
-            type='error'
-            onSubmit={handleLogin}
-            username={username}
-            onChangeUsername={({ target }) => setUsername(target.value)}
-            password={password}
-            onChangePassword={({ target }) => setPassword(target.value)}
+            logUser={handleLogin}
           />
         )
         : (
@@ -109,13 +88,7 @@ const App = () => {
             </div>
             <Togglable buttonLabel="create new blog">
               <NoteForm
-                onSubmit={addBlog}
-                title={title}
-                onChangeTitle={({ target }) => setTitle(target.value)}
-                author={author}
-                onChangeAuthor={({ target }) => setAuthor(target.value)}
-                url={url}
-                onChangeUrl={({ target }) => setUrl(target.value)}
+                createBlog={addBlog}
               />
             </Togglable>
             {blogs.map(blog =>

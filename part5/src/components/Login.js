@@ -1,37 +1,52 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Notification from './Notification'
 
 const Login = ({
   message,
-  type,
-  onSubmit,
-  username,
-  onChangeUsername,
-  password,
-  onChangePassword }) => (<>
-    <h2>log in to application</h2>
-    <Notification message={message} type={type} />
-    <form onSubmit={onSubmit}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={onChangeUsername}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={onChangePassword}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-  </>)
+  logUser,
+}) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+
+    logUser({
+      username,
+      password
+    })
+
+    setUsername('')
+    setPassword('')
+  }
+
+  return (
+    <div>
+      <h2>log in to application</h2>
+      <Notification message={message} type="error" />
+      <form onSubmit={handleLogin}>
+        <div>
+          username
+          <input
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
+          password
+          <input
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
+    </div>
+  )
+}
 
 export default Login
