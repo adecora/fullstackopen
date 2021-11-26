@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, updateLike }) => {
+const Blog = ({ blog, username, updateLike, removeBlog }) => {
   const [showDetail, setShowDetail] = useState(false)
 
   const blogStyle = {
@@ -11,6 +11,11 @@ const Blog = ({ blog, updateLike }) => {
     marginBottom: 5
   }
 
+  const removeStyle = {
+    backgroundColor: 'cornflowerblue',
+    borderRadius: 5
+  }
+
   const toggleDetail = () => {
     setShowDetail(!showDetail)
   }
@@ -18,7 +23,6 @@ const Blog = ({ blog, updateLike }) => {
   const showWhenDetail = { display: showDetail ? '' : 'none' }
 
   const incLike = () => {
-    console.log({ blog })
     updateLike(
       blog.id,
       {
@@ -29,6 +33,12 @@ const Blog = ({ blog, updateLike }) => {
         user: blog.user.id
       }
     )
+  }
+
+  const deleteBlog = () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      removeBlog(blog.id)
+    }
   }
 
   return (
@@ -44,6 +54,10 @@ const Blog = ({ blog, updateLike }) => {
           <button onClick={incLike}>like</button>
         </div>
         <div>{blog.user.name}</div>
+        {
+          username === blog.user.username &&
+          <button style={removeStyle} onClick={deleteBlog}>remove</button>
+        }
       </div>
     </div>
   )

@@ -29,6 +29,9 @@ const App = () => {
     }
   }, [])
 
+  // Sort the blogs array by number of likes, sort is an in place operation
+  blogs.sort((a, b) => b.likes - a.likes)
+
   const handleLogin = (userObject) => {
     loginService
       .login(userObject)
@@ -57,7 +60,6 @@ const App = () => {
     blogService
       .create(blog)
       .then(returnedBlog => {
-        console.log(returnedBlog)
         setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
         setNotificationType("notification")
         setBlogs(blogs.concat(returnedBlog))
@@ -69,15 +71,20 @@ const App = () => {
       })
       .catch(error => {
         console.log(error)
+        setNotification(error.response.data.error)
+        setNotificationType('error')
+
+        setTimeout(() => {
+          setNotification(null)
+          setNotificationType(null)
+        }, 3000)
       })
   }
 
   const incLike = (id, changedBlog) => {
-    console.log(id, changedBlog)
     blogService
       .update(id, changedBlog)
       .then(returnedBlog => {
-        console.log(returnedBlog)
         setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
       })
       .catch(error => {
@@ -93,6 +100,25 @@ const App = () => {
           setNotificationType(null)
         }, 3000)
         setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+  }
+
+  const removeBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(_response => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+      .catch(error => {
+        console.log(error)
+
+        setNotification(error.response.statusText)
+        setNotificationType('error')
+
+        setTimeout(() => {
+          setNotification(null)
+          setNotificationType(null)
+        }, 3000)
       })
   }
 
@@ -120,7 +146,12 @@ const App = () => {
               />
             </Togglable>
             {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} updateLike={incLike} />
+              <Blog key={blog.id}
+                blog={blog}
+                username={user.username}
+                updateLike={incLike}
+                removeBlog={removeBlog}
+              />
             )}
           </>
         )
