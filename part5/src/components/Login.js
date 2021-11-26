@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Notification from './Notification'
+import PropTypes from 'prop-types'
 
 const Login = ({
   message,
@@ -47,6 +48,10 @@ const Login = ({
       </form>
     </div>
   )
+}
+
+Login.propTypes = {
+  logUser: PropTypes.func.isRequired
 }
 
 export default Login

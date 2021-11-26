@@ -42,7 +42,7 @@ const App = () => {
         setUser(user)
         blogService.setToken(user.token)
       })
-      .catch((_error) => {
+      .catch(() => {
         setNotification('wrong username or password')
 
         setTimeout(() => {
@@ -61,7 +61,7 @@ const App = () => {
       .create(blog)
       .then(returnedBlog => {
         setNotification(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`)
-        setNotificationType("notification")
+        setNotificationType('notification')
         setBlogs(blogs.concat(returnedBlog))
 
         setTimeout(() => {
@@ -93,7 +93,7 @@ const App = () => {
         setNotification(
           `Blog '${changedBlog.title}' was already removed from the server`
         )
-        setNotificationType("error")
+        setNotificationType('error')
 
         setTimeout(() => {
           setNotification(null)
@@ -106,7 +106,7 @@ const App = () => {
   const removeBlog = (id) => {
     blogService
       .remove(id)
-      .then(_response => {
+      .then(() => {
         setBlogs(blogs.filter(blog => blog.id !== id))
       })
       .catch(error => {
