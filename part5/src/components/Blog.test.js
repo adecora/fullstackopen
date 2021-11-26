@@ -55,4 +55,23 @@ describe('<Blog />', () => {
     const div = component.container.querySelector('.showWhenDetail')
     expect(div).not.toHaveStyle('display: none')
   })
+
+  test('like button cliked', () => {
+    const likeInc = jest.fn()
+
+    const component = render(
+      <Blog
+        blog={blog}
+        username=""
+        updateLike={likeInc}
+        removeBlog={() => { }}
+      />
+    )
+
+    const button = component.getByText('like')
+    fireEvent.click(button)
+    fireEvent.click(button)
+
+    expect(likeInc.mock.calls).toHaveLength(2)
+  })
 })
