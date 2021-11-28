@@ -36,6 +36,32 @@ describe('Blog app', function () {
       cy.contains('wrong username or password')
       cy.get('.notification').should('have.css', 'color', 'rgb(255, 0, 0)')
     })
+  })
 
+  describe('When logged in', function () {
+    beforeEach(function () {
+      cy.login({
+        username: 'adecora',
+        password: '12345'
+      })
+    })
+
+    it('A blog can be created', function () {
+      cy.contains('create new blog').click()
+      cy.get('[name="Title"]').type('freeCodeCamp')
+      cy.get('[name="Author"]').type('Quincy Larson')
+      cy.get('[name="Url"]').type('https://www.freecodecamp.org/')
+      cy.get('#create-blog').click()
+
+      cy.contains('a new blog freeCodeCamp by Quincy Larson added')
+      cy.get('.notification').should('have.css', 'color', 'rgb(0, 128, 0)')
+
+      cy.get('.showAlways')
+        .should('contain', 'freeCodeCamp Quincy Larson')
+
+      cy.get('.showWhenDetail')
+        .should('contain', 'https://www.freecodecamp.org/')
+        .should('contain', 'Alejandro')
+    })
   })
 })
