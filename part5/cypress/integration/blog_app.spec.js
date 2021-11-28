@@ -63,5 +63,22 @@ describe('Blog app', function () {
         .should('contain', 'https://www.freecodecamp.org/')
         .should('contain', 'Alejandro')
     })
+
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createNote({
+          title: 'freeCodeCamp',
+          author: 'Quincy Larson',
+          url: 'https://www.freecodecamp.org/'
+        })
+      })
+
+      it.only('blog can be liked', function () {
+        cy.contains('view').click()
+        cy.contains('likes 0')
+        cy.get('#like-blog').click()
+        cy.contains('likes 1')
+      })
+    })
   })
 })
