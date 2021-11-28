@@ -67,6 +67,7 @@ describe('Blog app', function () {
         cy.createNote({
           title: 'freeCodeCamp',
           author: 'Quincy Larson',
+          likes: 0,
           url: 'https://www.freecodecamp.org/'
         })
       })
@@ -93,6 +94,7 @@ describe('Blog app', function () {
         cy.createNote({
           title: 'freeCodeCamp',
           author: 'Quincy Larson',
+          likes: 0,
           url: 'https://www.freecodecamp.org/'
         })
         cy.createUser({
@@ -116,7 +118,67 @@ describe('Blog app', function () {
             expect($buttons).to.have.length(1)
           })
       })
+    })
 
+    describe('and several blog exits', function () {
+      let checkBlogOrder
+
+      beforeEach(function () {
+        checkBlogOrder = () => {
+          cy.get('.blog')
+            .then(($blogs) => {
+              const blogs = Array.from($blogs.map((_, el) =>
+                Number(el.innerHTML.match(/<div>likes (\d+)<button/)[1])
+              ))
+
+              if (JSON.stringify(blogs) !== JSON.stringify(blogs.sort((a, b) => b - a))) {
+                throw new Error('Blogs are not ordered by likes')
+              }
+            })
+        }
+
+        cy.createNote({
+          title: 'freeCodeCamp',
+          author: 'Quincy Larson',
+          likes: 105,
+          url: 'https://www.freecodecamp.org/'
+        })
+        cy.createNote({
+          title: 'The Odin Project',
+          author: 'Erik Trautman',
+          likes: 104,
+          url: 'https://www.theodinproject.com/about'
+        })
+        cy.createNote({
+          title: 'nixCraft',
+          author: 'Vivek Gite',
+          likes: 103,
+          url: 'https://www.cyberciti.biz/'
+        })
+      })
+
+      it('blogs are ordered by number of likes', function () {
+        checkBlogOrder()
+
+        cy.get('.blog').contains('nixCraft').as('nixCraft')
+        cy.get('@nixCraft')
+          .contains('view')
+          .click()
+
+        cy.get('@nixCraft')
+          .parent()
+          .contains('like')
+          .as('likeButton')
+
+        cy.get('@likeButton').click()
+        cy.get('@nixCraft').parent().should('contain', 'likes 104')
+        cy.get('@likeButton').click()
+        cy.get('@nixCraft').parent().should('contain', 'likes 105')
+        cy.get('@likeButton').click()
+        cy.get('@nixCraft').parent().should('contain', 'likes 106')
+
+        checkBlogOrder()
+      })
     })
   })
 })
