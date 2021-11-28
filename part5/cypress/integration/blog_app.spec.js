@@ -1,13 +1,11 @@
 describe('Blog app', function () {
   beforeEach(function () {
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    const user = {
+    cy.createUser({
       name: 'Alejandro',
       username: 'adecora',
       password: '12345'
-    }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
-    cy.visit('http://localhost:3000')
+    })
   })
 
   it('Login form is show', function () {
@@ -61,7 +59,7 @@ describe('Blog app', function () {
 
       cy.get('.showWhenDetail')
         .should('contain', 'https://www.freecodecamp.org/')
-        .should('contain', 'Alejandro')
+        .and('contain', 'Alejandro')
     })
 
     describe('and a blog exists', function () {
@@ -73,12 +71,52 @@ describe('Blog app', function () {
         })
       })
 
-      it.only('blog can be liked', function () {
+      it('blog can be liked', function () {
         cy.contains('view').click()
         cy.contains('likes 0')
         cy.get('#like-blog').click()
         cy.contains('likes 1')
       })
+
+      it('blog can be delete', function () {
+        cy.contains('view').click()
+        cy.contains('remove').click()
+
+        cy.get('html')
+          .should('not.contain', 'freeCodeCamp Quincy Larson')
+          .and('not.contain', 'https://www.freecodecamp.org/')
+      })
+    })
+
+    describe('a blog from another user exits', function () {
+      beforeEach(function () {
+        cy.createNote({
+          title: 'freeCodeCamp',
+          author: 'Quincy Larson',
+          url: 'https://www.freecodecamp.org/'
+        })
+        cy.createUser({
+          name: 'admin',
+          username: 'admin',
+          password: '12345'
+        })
+        cy.login({
+          username: 'admin',
+          password: '12345'
+        })
+      })
+
+      it('user can not delete a post from another owner', function () {
+        cy.contains('view').click()
+
+        cy.get('.showWhenDetail')
+          .should('not.contain', 'remove')
+          .find('button')
+          .then(($buttons) => {
+            expect($buttons).to.have.length(1)
+          })
+      })
+
     })
   })
 })
