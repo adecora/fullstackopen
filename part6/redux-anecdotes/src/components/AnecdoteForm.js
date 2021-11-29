@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
 
-const NewAnecdote = ({ title }) => {
+const AnecdoteForm = ({ title }) => {
   const dispatch = useDispatch()
 
   const addAnecdote = (event) => {
@@ -24,4 +24,4 @@ const NewAnecdote = ({ title }) => {
   )
 }
 
-export default NewAnecdote
+export default AnecdoteForm
