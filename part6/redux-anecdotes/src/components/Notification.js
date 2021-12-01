@@ -3,6 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 const Notification = (props) => {
+
   if (props.notification === null) {
     return null
   }
@@ -20,7 +21,7 @@ const Notification = (props) => {
 }
 
 const mapStateToProps = (state) => ({
-  notification: state.notification
+  notification: state.notification.message
 })
 
 const ConnectedNotification = connect(mapStateToProps)(Notification)

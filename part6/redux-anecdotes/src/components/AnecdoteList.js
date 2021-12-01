@@ -24,8 +24,7 @@ const AnecdoteList = (props) => {
   )
 }
 
-const mapStateToProps = (state, ownProps) => {
-  console.log(state, ownProps)
+const mapStateToProps = (state) => {
   return {
     anecdotes: state
       .anecdotes
