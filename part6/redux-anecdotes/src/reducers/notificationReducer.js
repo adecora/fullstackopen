@@ -19,18 +19,10 @@ export const setNotification = (message, seconds) => {
     const notification = getState().notification
 
     if (notification.timer !== null) {
-      console.timeEnd('notification')
-      console.log(
-        `Clear Timer ${notification.timer} of msg ${notification.message}`
-      )
       clearTimeout(notification.timer)
     }
 
-    console.time('notification')
-    console.log(notification, message)
     const timer = setTimeout(() => {
-      console.timeEnd('notification')
-      console.log('TimeOut')
       dispatch({
         type: 'REMOVE_NOTIFICATION'
       })
