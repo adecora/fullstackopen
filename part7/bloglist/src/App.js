@@ -1,0 +1,140 @@
+import React, { useState, useEffect } from 'react'
+import Blog from './components/Blog'
+import Login from './components/Login'
+import NoteForm from './components/NoteForm'
+import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import blogService from './services/blogs'
+import loginService from './services/login'
+
+import { useDispatch } from 'react-redux'
+import { setNotification } from './reducers/notificationReducer'
+
+const App = () => {
+  const [blogs, setBlogs] = useState([])
+  const [user, setUser] = useState(null)
+
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    blogService.getAll().then(blogs =>
+      setBlogs(blogs)
+    )
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
+  }, [])
+
+  // Sort the blogs array by number of likes, sort is an in place operation
+  blogs.sort((a, b) => b.likes - a.likes)
+
+  const handleLogin = (userObject) => {
+    loginService
+      .login(userObject)
+      .then(user => {
+        window.localStorage.setItem(
+          'loggedBlogappUser', JSON.stringify(user)
+        )
+        setUser(user)
+        blogService.setToken(user.token)
+      })
+      .catch(() => {
+        dispatch(setNotification('wrong username or password', 'error', 3))
+      })
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogappUser')
+    setUser(null)
+  }
+
+  const addBlog = (blog) => {
+    blogService
+      .create(blog)
+      .then(returnedBlog => {
+        dispatch(
+          setNotification(
+            `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+            'notification',
+            3
+          )
+        )
+        setBlogs(blogs.concat(returnedBlog))
+      })
+      .catch(error => {
+        console.log(error)
+        dispatch(setNotification(error.response.data.error, 'error', 3))
+      })
+  }
+
+  const incLike = (id, changedBlog) => {
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        console.log(error)
+        dispatch(
+          setNotification(
+            `Blog '${changedBlog.title}' was already removed from the server`,
+            'error',
+            3
+          )
+        )
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+  }
+
+  const removeBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(() => {
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+      .catch(error => {
+        console.log(error)
+        dispatch(setNotification(error.response.statusText, 'error', 3))
+      })
+  }
+
+  return (
+    <div>
+
+      {user === null
+        ? <Login logUser={handleLogin} />
+        : (
+          <>
+            <h2>blogs</h2>
+            <Notification />
+            <div>
+              {user.name} logged in { }
+              <button onClick={handleLogout}>logout</button>
+            </div>
+            <Togglable buttonLabel="create new blog">
+              <NoteForm
+                createBlog={addBlog}
+              />
+            </Togglable>
+            {blogs.map(blog =>
+              <Blog key={blog.id}
+                blog={blog}
+                username={user.username}
+                updateLike={incLike}
+                removeBlog={removeBlog}
+              />
+            )}
+          </>
+        )
+      }
+    </div >
+  )
+}
+
+export default App
