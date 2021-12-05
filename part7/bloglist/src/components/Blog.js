@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
 
-const Blog = ({ blog, username, updateLike, removeBlog }) => {
+const Blog = ({ blog, username }) => {
+  const dispatch = useDispatch()
+
   const [showDetail, setShowDetail] = useState(false)
 
   const blogStyle = {
@@ -24,21 +28,23 @@ const Blog = ({ blog, username, updateLike, removeBlog }) => {
   const showWhenDetail = { display: showDetail ? '' : 'none' }
 
   const incLike = () => {
-    updateLike(
-      blog.id,
-      {
-        title: blog.title,
-        author: blog.author,
-        url: blog.url,
-        likes: blog.likes + 1,
-        user: blog.user.id
-      }
+    dispatch(
+      likeBlog(
+        blog.id,
+        {
+          title: blog.title,
+          author: blog.author,
+          url: blog.url,
+          likes: blog.likes + 1,
+          user: blog.user.id
+        }
+      )
     )
   }
 
-  const deleteBlog = () => {
+  const removeBlog = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      removeBlog(blog.id)
+      dispatch(deleteBlog(blog.id))
     }
   }
 
@@ -57,7 +63,7 @@ const Blog = ({ blog, username, updateLike, removeBlog }) => {
         <div>{blog.user.name}</div>
         {
           username === blog.user.username &&
-          <button style={removeStyle} onClick={deleteBlog}>remove</button>
+          <button style={removeStyle} onClick={removeBlog}>remove</button>
         }
       </div>
     </div>
@@ -67,8 +73,6 @@ const Blog = ({ blog, username, updateLike, removeBlog }) => {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   username: PropTypes.string.isRequired,
-  updateLike: PropTypes.func.isRequired,
-  removeBlog: PropTypes.func.isRequired
 }
 
 export default Blog

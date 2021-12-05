@@ -1,23 +1,24 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useField } from '../hooks'
 import Notification from './Notification'
 import PropTypes from 'prop-types'
 
 const Login = ({
   logUser,
 }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const { reset: resetUsername, ...username } = useField('Username', 'text')
+  const { reset: resetPassword, ...password } = useField('Password', 'password')
 
   const handleLogin = (event) => {
     event.preventDefault()
 
     logUser({
-      username,
-      password
+      username: username.value,
+      password: password.value
     })
 
-    setUsername('')
-    setPassword('')
+    resetUsername()
+    resetPassword()
   }
 
   return (
@@ -27,21 +28,11 @@ const Login = ({
       <form onSubmit={handleLogin}>
         <div>
           username
-          <input
-            type="text"
-            value={username}
-            name="Username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
+          <input {...username} />
         </div>
         <div>
           password
-          <input
-            type="password"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
+          <input {...password} />
         </div>
         <button type="submit">login</button>
       </form>

@@ -1,25 +1,32 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
 
-const NoteForm = ({
-  createBlog,
-}) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+import { useField } from '../hooks'
+
+const NoteForm = () => {
+  const { reset: resetTitle, ...title } = useField('Title', 'text')
+  const { reset: resetAuthor, ...author } = useField('Author', 'text')
+  const { reset: resetUrl, ...url } = useField('Url', 'url')
+
+  const dispatch = useDispatch()
 
   const addBlog = (event) => {
     event.preventDefault()
 
-    createBlog({
-      title,
-      author,
-      url
-    })
+    dispatch(
+      createBlog(
+        {
+          title: title.value,
+          author: author.value,
+          url: url.value
+        }
+      )
+    )
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    resetTitle()
+    resetAuthor()
+    resetUrl()
   }
 
   return (
@@ -28,39 +35,20 @@ const NoteForm = ({
       <form onSubmit={addBlog}>
         <div>
           title:
-          <input
-            type="text"
-            value={title}
-            name="Title"
-            onChange={({ target }) => setTitle(target.value)}
-          />
+          <input {...title} />
         </div>
         <div>
           author:
-          <input
-            type="text"
-            value={author}
-            name="Author"
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+          <input {...author} />
         </div>
         <div>
           url:
-          <input
-            type="text"
-            value={url}
-            name="Url"
-            onChange={({ target }) => setUrl(target.value)}
-          />
+          <input {...url} />
         </div>
         <button id="create-blog" type="submit">create</button>
       </form>
     </div>
   )
-}
-
-NoteForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
 }
 
 export default NoteForm

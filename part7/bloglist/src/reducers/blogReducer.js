@@ -8,7 +8,16 @@ const blogReducer = (state = [], action) => {
     case 'INITIALIZE':
       return action.data
     case 'CREATE_BLOG':
-      return state.concat(action.data)
+      return [...state, action.data]
+    case 'LIKE_BLOG': {
+      const id = action.data.id
+      return state
+        .map(blog => blog.id !== id ? blog : action.data)
+    }
+    case 'DELETE_BLOG': {
+      const id = action.data.id
+      return state.filter(blog => blog.id !== id)
+    }
     default:
       return state
   }
@@ -43,6 +52,42 @@ export const createBlog = (blog) => {
     } catch (error) {
       console.log(error)
       dispatch(setNotification(error.response.data.error, 'error', 3))
+    }
+  }
+}
+
+export const likeBlog = (id, likedBlog) => {
+  return async (dispatch) => {
+    try {
+      const returnedBlog = await blogService.update(id, likedBlog)
+      dispatch({
+        type: 'LIKE_BLOG',
+        data: returnedBlog
+      })
+    } catch (error) {
+      console.log(error)
+      dispatch(
+        setNotification(
+          `Blog '${likedBlog.title}' was already removed from the server`,
+          'error',
+          3
+        )
+      )
+    }
+  }
+}
+
+export const deleteBlog = (id) => {
+  return async (dispatch) => {
+    try {
+      await blogService.remove(id)
+      dispatch({
+        type: 'DELETE_BLOG',
+        data: { id }
+      })
+    } catch (error) {
+      console.log(error)
+      dispatch(setNotification(error.response.statusText, 'error', 3))
     }
   }
 }
