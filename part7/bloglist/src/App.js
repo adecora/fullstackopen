@@ -7,19 +7,18 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog } from './reducers/blogReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
+  const blogs = useSelector((state) => state.blogs)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs(blogs)
-    )
+    dispatch(initializeBlogs())
   }, [])
 
   useEffect(() => {
@@ -55,53 +54,56 @@ const App = () => {
   }
 
   const addBlog = (blog) => {
-    blogService
-      .create(blog)
-      .then(returnedBlog => {
-        dispatch(
-          setNotification(
-            `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
-            'notification',
-            3
-          )
-        )
-        setBlogs(blogs.concat(returnedBlog))
-      })
-      .catch(error => {
-        console.log(error)
-        dispatch(setNotification(error.response.data.error, 'error', 3))
-      })
+    dispatch(createBlog(blog))
+    // blogService
+    //   .create(blog)
+    //   .then(returnedBlog => {
+    //     dispatch(
+    //       setNotification(
+    //         `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`,
+    //         'notification',
+    //         3
+    //       )
+    //     )
+    //     setBlogs(blogs.concat(returnedBlog))
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     dispatch(setNotification(error.response.data.error, 'error', 3))
+    //   })
   }
 
   const incLike = (id, changedBlog) => {
-    blogService
-      .update(id, changedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-      })
-      .catch(error => {
-        console.log(error)
-        dispatch(
-          setNotification(
-            `Blog '${changedBlog.title}' was already removed from the server`,
-            'error',
-            3
-          )
-        )
-        setBlogs(blogs.filter(blog => blog.id !== id))
-      })
+    console.log(id, changedBlog)
+    // blogService
+    //   .update(id, changedBlog)
+    //   .then(returnedBlog => {
+    //     setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     dispatch(
+    //       setNotification(
+    //         `Blog '${changedBlog.title}' was already removed from the server`,
+    //         'error',
+    //         3
+    //       )
+    //     )
+    //     setBlogs(blogs.filter(blog => blog.id !== id))
+    //   })
   }
 
   const removeBlog = (id) => {
-    blogService
-      .remove(id)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog.id !== id))
-      })
-      .catch(error => {
-        console.log(error)
-        dispatch(setNotification(error.response.statusText, 'error', 3))
-      })
+    console.log(id)
+    // blogService
+    //   .remove(id)
+    //   .then(() => {
+    //     setBlogs(blogs.filter(blog => blog.id !== id))
+    //   })
+    //   .catch(error => {
+    //     console.log(error)
+    //     dispatch(setNotification(error.response.statusText, 'error', 3))
+    //   })
   }
 
   return (

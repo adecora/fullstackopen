@@ -1,5 +1,5 @@
 const notificationReducer = (state = null, action) => {
-  console.log(state, action)
+  console.log('notification', state, action)
   switch (action.type) {
     case 'SET_NOTIFICATION':
       return action.data
