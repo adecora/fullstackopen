@@ -55,10 +55,10 @@ export const createBlog = (blog) => {
   }
 }
 
-export const likeBlog = (id, likedBlog) => {
+export const likeBlog = (id, likes) => {
   return async (dispatch) => {
     try {
-      const returnedBlog = await blogService.update(id, likedBlog)
+      const returnedBlog = await blogService.like(id, likes)
       dispatch({
         type: 'LIKE_BLOG',
         data: returnedBlog
@@ -67,7 +67,7 @@ export const likeBlog = (id, likedBlog) => {
       console.log(error)
       dispatch(
         setNotification(
-          `Blog '${likedBlog.title}' was already removed from the server`,
+          `Blog '${id}' was already removed from the server`,
           'error',
           3
         )

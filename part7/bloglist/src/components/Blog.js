@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog } from '../reducers/blogReducer'
 
 const Blog = () => {
   const id = useParams().id
@@ -14,32 +14,16 @@ const Blog = () => {
   }
 
   const dispatch = useDispatch()
-  const username = useSelector((state) => state.user.username)
 
   const incLike = () => {
     dispatch(
       likeBlog(
         blog.id,
         {
-          title: blog.title,
-          author: blog.author,
-          url: blog.url,
           likes: blog.likes + 1,
-          user: blog.user.id
         }
       )
     )
-  }
-
-  const removeBlog = () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      dispatch(deleteBlog(blog.id))
-    }
-  }
-
-  const removeStyle = {
-    backgroundColor: 'cornflowerblue',
-    borderRadius: 5
   }
 
   return (
@@ -55,9 +39,16 @@ const Blog = () => {
         <button id="like-blog" onClick={incLike}>like</button>
       </div>
       <div>added by {blog.user.name}</div>
-      {
-        username === blog.user.username &&
-        <button style={removeStyle} onClick={removeBlog}>remove</button>
+      {blog.comments.length
+        ? (<div>
+          <h3>comments</h3>
+          <ul>
+            {blog.comments.map(comment =>
+              <li key={comment}>{comment}</li>
+            )}
+          </ul>
+        </div>)
+        : <h3>no comments</h3>
       }
     </div>
   )
