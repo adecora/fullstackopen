@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
-// import Blog from './Blog'
-import { Link } from 'react-router-dom'
-import NoteForm from './NoteForm'
-import Togglable from './Togglable'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from '../reducers/blogReducer'
+import { Link } from 'react-router-dom'
+import { NoteForm, Togglable } from '.'
 
 const Blogs = () => {
   const dispatch = useDispatch()

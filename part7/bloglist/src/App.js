@@ -1,16 +1,18 @@
 import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { initialLogin, logOut } from './reducers/loginReducer'
 import {
   BrowserRouter as Router,
   Link, Switch, Route
 } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { initialLogin, logOut } from './reducers/loginReducer'
-import Notification from './components/Notification'
-import Login from './components/Login'
-import Blogs from './components/Blogs'
-import Blog from './components/Blog'
-import Users from './components/Users'
-import User from './components/User'
+import {
+  Blog,
+  Blogs,
+  Login,
+  Notification,
+  User,
+  Users
+} from './components'
 
 
 const App = () => {
