@@ -9,6 +9,7 @@ import Notification from './components/Notification'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
 import Users from './components/Users'
+import User from './components/User'
 
 
 const App = () => {
@@ -33,6 +34,9 @@ const App = () => {
         </div>
       )}
       <Switch>
+        <Route path="/users/:id">
+          <User />
+        </Route>
         <Route path="/users">
           <Users />
         </Route>
