@@ -1,21 +1,24 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { logIn } from '../reducers/userReducer'
 import { useField } from '../hooks'
 import Notification from './Notification'
-import PropTypes from 'prop-types'
 
-const Login = ({
-  logUser,
-}) => {
+const Login = () => {
+  const dispatch = useDispatch()
+
   const { reset: resetUsername, ...username } = useField('Username', 'text')
   const { reset: resetPassword, ...password } = useField('Password', 'password')
 
   const handleLogin = (event) => {
     event.preventDefault()
 
-    logUser({
-      username: username.value,
-      password: password.value
-    })
+    dispatch(
+      logIn({
+        username: username.value,
+        password: password.value
+      })
+    )
 
     resetUsername()
     resetPassword()
@@ -38,10 +41,6 @@ const Login = ({
       </form>
     </div>
   )
-}
-
-Login.propTypes = {
-  logUser: PropTypes.func.isRequired
 }
 
 export default Login

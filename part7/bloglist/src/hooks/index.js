@@ -18,5 +18,22 @@ export const useField = (name, type) => {
     onChange,
     reset
   }
+}
 
+export const useTogglable = (initial) => {
+  const [value, setValue] = useState(initial)
+
+  const hideWhenVisible = { display: value ? 'none' : '' }
+  const showWhenVisible = { display: value ? '' : 'none' }
+
+  const toggleVisibility = () => {
+    setValue(!value)
+  }
+
+  return {
+    value,
+    hideWhenVisible,
+    showWhenVisible,
+    toggleVisibility
+  }
 }

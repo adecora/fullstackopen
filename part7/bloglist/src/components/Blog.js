@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { useTogglable } from '../hooks'
 
-const Blog = ({ blog, username }) => {
+const Blog = ({ blog }) => {
   const dispatch = useDispatch()
 
-  const [showDetail, setShowDetail] = useState(false)
+  const username = useSelector((state) => state.user.username)
+
+  const togglable = useTogglable(false)
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,12 +23,6 @@ const Blog = ({ blog, username }) => {
     backgroundColor: 'cornflowerblue',
     borderRadius: 5
   }
-
-  const toggleDetail = () => {
-    setShowDetail(!showDetail)
-  }
-
-  const showWhenDetail = { display: showDetail ? '' : 'none' }
 
   const incLike = () => {
     dispatch(
@@ -52,9 +49,11 @@ const Blog = ({ blog, username }) => {
     <div className="blog" style={blogStyle}>
       <div className="showAlways">
         {blog.title} {blog.author}
-        <button onClick={toggleDetail}>{showDetail ? 'hide' : 'view'}</button>
+        <button onClick={togglable.toggleVisibility}>
+          {togglable.value ? 'hide' : 'view'}
+        </button>
       </div>
-      <div style={showWhenDetail} className="showWhenDetail">
+      <div style={togglable.showWhenVisible} className="showWhenDetail">
         <div>{blog.url}</div>
         <div>
           likes {blog.likes}
@@ -71,8 +70,7 @@ const Blog = ({ blog, username }) => {
 }
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  username: PropTypes.string.isRequired,
+  blog: PropTypes.object.isRequired
 }
 
 export default Blog

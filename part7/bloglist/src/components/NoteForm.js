@@ -1,15 +1,14 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
-
 import { useField } from '../hooks'
 
 const NoteForm = () => {
+  const dispatch = useDispatch()
+
   const { reset: resetTitle, ...title } = useField('Title', 'text')
   const { reset: resetAuthor, ...author } = useField('Author', 'text')
   const { reset: resetUrl, ...url } = useField('Url', 'url')
-
-  const dispatch = useDispatch()
 
   const addBlog = (event) => {
     event.preventDefault()

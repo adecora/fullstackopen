@@ -1,11 +1,10 @@
 import blogService from '../services/blogs'
-
 import { setNotification } from './notificationReducer'
 
 const blogReducer = (state = [], action) => {
   console.log('blog', state, action)
   switch (action.type) {
-    case 'INITIALIZE':
+    case 'INITIALIZE_BLOG':
       return action.data
     case 'CREATE_BLOG':
       return [...state, action.data]
@@ -27,7 +26,7 @@ export const initializeBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll()
     dispatch({
-      type: 'INITIALIZE',
+      type: 'INITIALIZE_BLOG',
       data: blogs
     })
   }
