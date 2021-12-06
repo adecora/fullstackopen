@@ -1,50 +1,49 @@
 import React, { useEffect } from 'react'
-import Blog from './components/Blog'
-import Login from './components/Login'
-import NoteForm from './components/NoteForm'
-import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { initializeBlogs } from './reducers/blogReducer'
-import { initializeUser, logOut } from './reducers/userReducer'
+import { initialLogin, logOut } from './reducers/loginReducer'
+import Notification from './components/Notification'
+import Login from './components/Login'
+import Blogs from './components/Blogs'
+import Users from './components/Users'
+
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
 
   useEffect(() => {
-    dispatch(initializeBlogs())
-    dispatch(initializeUser())
-  }, [])
-
-  // Sort the blogs array by number of likes, sort is an in place operation
-  blogs.sort((a, b) => b.likes - a.likes)
+    dispatch(initialLogin())
+  }, [dispatch])
 
   return (
-    <div>
-
-      {user === null
-        ? <Login />
-        : (
-          <>
-            <h2>blogs</h2>
-            <Notification />
-            <div>
-              {user.name} logged in { }
-              <button onClick={() => dispatch(logOut())}>logout</button>
-            </div>
-            <Togglable buttonLabel="create new blog">
-              <NoteForm />
-            </Togglable>
-            {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
-            )}
-          </>
-        )
-      }
-    </div >
+    <Router>
+      {user && (
+        <div>
+          <h2>blogs</h2>
+          <Notification />
+          <div>
+            {user.name} logged in { }
+            <button onClick={() => dispatch(logOut())}>logout</button>
+          </div>
+        </div>
+      )}
+      <Switch>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/">
+          {user === null
+            ? <Login />
+            : <Blogs />
+          }
+        </Route>
+      </Switch>
+    </Router>
   )
 }
 
