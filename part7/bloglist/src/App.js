@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Link, Switch, Route
 } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { initialLogin, logOut } from './reducers/loginReducer'
@@ -22,18 +22,28 @@ const App = () => {
     dispatch(initialLogin())
   }, [dispatch])
 
+  if (user === null) {
+    return <Login />
+  }
+
+  const padding = {
+    padding: 5
+  }
+
+  const navigation = {
+    backgroundColor: 'lightgrey',
+    padding: 5
+  }
+
   return (
     <Router>
-      {user && (
-        <div>
-          <h2>blogs</h2>
-          <Notification />
-          <div>
-            {user.name} logged in { }
-            <button onClick={() => dispatch(logOut())}>logout</button>
-          </div>
-        </div>
-      )}
+      <div style={navigation}>
+        <Link style={padding} to="/">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user.name} logged in { }
+        <button onClick={() => dispatch(logOut())}>logout</button>
+      </div>
+      <Notification />
       <Switch>
         <Route path="/blogs/:id">
           <Blog />
@@ -45,10 +55,7 @@ const App = () => {
           <Users />
         </Route>
         <Route path="/">
-          {user === null
-            ? <Login />
-            : <Blogs />
-          }
+          <Blogs />
         </Route>
       </Switch>
     </Router>
