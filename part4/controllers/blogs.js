@@ -31,6 +31,21 @@ blogsRouter.post('/', userExtractor, async (request, response) => {
   })
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const id = request.params.id
+  const comment = request.body.comment
+
+  const blog = await Blog
+    .findByIdAndUpdate(id, { $push: { comments: comment } }, { new: true })
+    .populate('user', { name: 1, username: 1 })
+
+  if (blog === null) {
+    return response.status(404).end()
+  }
+
+  response.json(blog)
+})
+
 blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const user = request.user
   const blog = await Blog.findById(request.params.id)
@@ -43,19 +58,18 @@ blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   response.status(401).end()
 })
 
-blogsRouter.put('/:id', async (request, response) => {
-  const { title, author, url, likes, user } = request.body
+blogsRouter.put('/:id/like', async (request, response) => {
+  const id = request.params.id
+  const likes = request.body.likes
 
-  const blog = { title, author, url, likes, user }
-
-  const updatedBlog = await Blog
-    .findByIdAndUpdate(request.params.id, blog, { new: true })
+  const blog = await Blog
+    .findByIdAndUpdate(id, { $set: { likes } }, { new: true })
     .populate('user', { name: 1, username: 1 })
 
-  if (updatedBlog === null) {
+  if (blog === null) {
     return response.status(404).end()
   }
-  response.json(updatedBlog)
+  response.json(blog)
 })
 
 module.exports = blogsRouter

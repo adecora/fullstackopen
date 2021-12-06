@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog } from '../reducers/blogReducer'
+import Comments from './Comments'
 
 const Blog = () => {
   const id = useParams().id
@@ -39,17 +40,10 @@ const Blog = () => {
         <button id="like-blog" onClick={incLike}>like</button>
       </div>
       <div>added by {blog.user.name}</div>
-      {blog.comments.length
-        ? (<div>
-          <h3>comments</h3>
-          <ul>
-            {blog.comments.map(comment =>
-              <li key={comment}>{comment}</li>
-            )}
-          </ul>
-        </div>)
-        : <h3>no comments</h3>
-      }
+      <Comments
+        id={blog.id}
+        comments={blog.comments}
+      />
     </div>
   )
 }

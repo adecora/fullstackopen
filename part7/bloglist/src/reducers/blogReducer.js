@@ -8,7 +8,7 @@ const blogReducer = (state = [], action) => {
       return action.data
     case 'CREATE_BLOG':
       return [...state, action.data]
-    case 'LIKE_BLOG': {
+    case 'UPDATE_BLOG': {
       const id = action.data.id
       return state
         .map(blog => blog.id !== id ? blog : action.data)
@@ -60,7 +60,28 @@ export const likeBlog = (id, likes) => {
     try {
       const returnedBlog = await blogService.like(id, likes)
       dispatch({
-        type: 'LIKE_BLOG',
+        type: 'UPDATE_BLOG',
+        data: returnedBlog
+      })
+    } catch (error) {
+      console.log(error)
+      dispatch(
+        setNotification(
+          `Blog '${id}' was already removed from the server`,
+          'error',
+          3
+        )
+      )
+    }
+  }
+}
+
+export const commentBlog = (id, comment) => {
+  return async (dispatch) => {
+    try {
+      const returnedBlog = await blogService.comment(id, comment)
+      dispatch({
+        type: 'UPDATE_BLOG',
         data: returnedBlog
       })
     } catch (error) {
