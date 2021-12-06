@@ -4,9 +4,9 @@ import { useSelector } from 'react-redux'
 
 const User = () => {
   const id = useParams().id
-  const user = useSelector((state) => {
-    return state.users.find(user => user.id === id)
-  })
+  const user = useSelector((state) =>
+    state.users.find(user => user.id === id)
+  )
 
   if (user === undefined) {
     return null

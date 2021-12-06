@@ -8,6 +8,7 @@ import { initialLogin, logOut } from './reducers/loginReducer'
 import Notification from './components/Notification'
 import Login from './components/Login'
 import Blogs from './components/Blogs'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 
@@ -34,6 +35,9 @@ const App = () => {
         </div>
       )}
       <Switch>
+        <Route path="/blogs/:id">
+          <Blog />
+        </Route>
         <Route path="/users/:id">
           <User />
         </Route>
