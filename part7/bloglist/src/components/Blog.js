@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { likeBlog } from '../reducers/blogReducer'
 import Comments from './Comments'
+import Button from 'react-bootstrap/Button'
+import Card from 'react-bootstrap/Card'
 
 const Blog = () => {
   const id = useParams().id
@@ -28,23 +30,38 @@ const Blog = () => {
   }
 
   return (
-    <div>
-      <h2>
-        {blog.title} {blog.author}
-      </h2>
-      <div>
-        <a href={blog.url}>{blog.url}</a>
-      </div>
-      <div>
-        {blog.likes} likes
-        <button id="like-blog" onClick={incLike}>like</button>
-      </div>
-      <div>added by {blog.user.name}</div>
-      <Comments
-        id={blog.id}
-        comments={blog.comments}
-      />
-    </div>
+    <Card
+      bg="light"
+      text="dark"
+      style={{ width: '50rem' }}
+      className="mb-2"
+    >
+      <Card.Header as="h5">{blog.title} {blog.author}</Card.Header>
+      <Card.Body>
+        <Card.Title>
+          <a href={blog.url}>{blog.url}</a>
+        </Card.Title>
+        <Card.Title>
+          {blog.likes} likes {' '}
+          <Button
+            id="like-blog"
+            className="ml-4"
+            onClick={incLike}
+          >
+            like
+          </Button>
+        </Card.Title>
+        <Card.Text>
+          added by {blog.user.name}
+        </Card.Text>
+      </Card.Body>
+      <Card.Footer>
+        <Comments
+          id={blog.id}
+          comments={blog.comments}
+        />
+      </Card.Footer>
+    </Card>
   )
 }
 

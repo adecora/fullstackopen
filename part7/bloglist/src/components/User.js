@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import Card from 'react-bootstrap/Card'
 
 const User = () => {
   const id = useParams().id
@@ -13,22 +14,29 @@ const User = () => {
   }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      {user.blogs.length === 0
-        ? <h3>no added blogs</h3>
-        : (
-          <div>
-            <h3>added blogs</h3>
-            <ul>
-              {user.blogs.map(blog =>
-                <li key={blog.id}>{blog.title}</li>
-              )}
-            </ul>
-          </div>
-        )
-      }
-    </div>
+    <Card
+      bg="light"
+      text="dark"
+      style={{ width: '50rem' }}
+      className="mb-2"
+    >
+      <Card.Header as="h5">{user.name}</Card.Header>
+      <Card.Body>
+        {user.blogs.length === 0
+          ? <Card.Title>no added blogs</Card.Title>
+          : (
+            <div>
+              <Card.Title>added blogs</Card.Title>
+              <ul>
+                {user.blogs.map(blog =>
+                  <li key={blog.id}>{blog.title}</li>
+                )}
+              </ul>
+            </div>
+          )
+        }
+      </Card.Body>
+    </Card>
   )
 }
 

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useTogglable } from '../hooks'
+import Button from 'react-bootstrap/Button'
 
 const Togglable = (props) => {
   const togglable = useTogglable(false)
@@ -8,15 +9,15 @@ const Togglable = (props) => {
   return (
     <div>
       <div style={{ ...togglable.hideWhenVisible, marginTop: '0.83em' }}>
-        <button onClick={togglable.toggleVisibility}>
+        <Button variant="secondary" onClick={togglable.toggleVisibility}>
           {props.buttonLabel}
-        </button>
+        </Button>
       </div>
       <div style={togglable.showWhenVisible}>
         {props.children}
-        <button onClick={togglable.toggleVisibility}>
+        <Button variant="secondary" onClick={togglable.toggleVisibility}>
           cancel
-        </button>
+        </Button>
       </div>
     </div >
   )

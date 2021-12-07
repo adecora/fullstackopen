@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from '../reducers/blogReducer'
 import { Link } from 'react-router-dom'
 import { NoteForm, Togglable } from '.'
+import Table from 'react-bootstrap/Table'
 
 const Blogs = () => {
   const dispatch = useDispatch()
@@ -16,26 +17,24 @@ const Blogs = () => {
   // Sort the blogs array by number of likes, sort is an in place operation
   blogs.sort((a, b) => b.likes - a.likes)
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  }
-
   return (
     <div>
       <Togglable buttonLabel="create new blog">
         <NoteForm />
       </Togglable>
-      {blogs.map(blog =>
-        <div className="blog" style={blogStyle} key={blog.id} blog={blog} >
-          <Link to={`/blogs/${blog.id}`}>
-            {blog.title} {blog.author}
-          </Link>
-        </div>
-      )}
+      <Table className="mt-3" striped bordered hover>
+        <tbody>
+          {blogs.map(blog =>
+            <tr key={blog.id}>
+              <td>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title} {blog.author}
+                </Link>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }
