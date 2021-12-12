@@ -1,25 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useMutation } from '@apollo/client'
 import { EDIT_AUTHOR } from '../queries'
 
-const AuthorForm = () => {
+const AuthorForm = ({ authors }) => {
+  const initialName = authors[0]
+
   const [editAuthor] = useMutation(EDIT_AUTHOR)
 
-  const { reset: resetName, ...name } = useField('text')
-  const { reset: resetBorn, ...born } = useField('born')
+  const [name, setName] = useState(initialName)
+  const { reset: resetBorn, ...born } = useField('text')
 
   const submit = (event) => {
     event.preventDefault()
 
     editAuthor({
       variables: {
-        name: name.value,
+        name,
         born: Number(born.value)
       }
     })
 
-    resetName()
+    setName(initialName)
     resetBorn()
   }
 
@@ -27,10 +29,14 @@ const AuthorForm = () => {
     <div>
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
-        <div>
-          name
-          <input {...name} />
-        </div>
+        <select value={name} onChange={({ target }) => setName(target.value)}>
+          {authors.map((author) => (
+            <option key={author} value={author}>
+              {author}
+            </option>
+          )
+          )}
+        </select>
         <div>
           born
           <input {...born} />

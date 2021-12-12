@@ -31,7 +31,9 @@ const Authors = ({ result }) => {
           ))}
         </tbody>
       </table>
-      <AuthorForm />
+      <AuthorForm
+        authors={[...new Set(result.data.authors.map(a => a.name))]}
+      />
     </div>
   )
 }
