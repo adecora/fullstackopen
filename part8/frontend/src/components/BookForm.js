@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useMutation } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../query'
+import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
 
 const BookForm = () => {
   const [addBook] = useMutation(CREATE_BOOK, {

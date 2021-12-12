@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, Switch, Route } from 'react-router-dom'
 import { useQuery } from '@apollo/client'
-import { ALL_AUTHORS, ALL_BOOKS } from './query'
+import { ALL_AUTHORS, ALL_BOOKS } from './queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'

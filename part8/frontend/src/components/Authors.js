@@ -1,4 +1,5 @@
 import React from 'react'
+import AuthorForm from './AuthorForm'
 
 const Authors = ({ result }) => {
   if (result.loading) {
@@ -30,6 +31,7 @@ const Authors = ({ result }) => {
           ))}
         </tbody>
       </table>
+      <AuthorForm />
     </div>
   )
 }
