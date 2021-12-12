@@ -1,9 +1,13 @@
 import React from 'react'
 import { Link, Switch, Route } from 'react-router-dom'
-import Authors from './components/Authors';
+import { useQuery } from '@apollo/client'
+import { ALL_AUTHORS, ALL_BOOKS } from './query'
+import Authors from './components/Authors'
+import Books from './components/Books'
 
 function App() {
-
+  const allAuthors = useQuery(ALL_AUTHORS)
+  const allBooks = useQuery(ALL_BOOKS)
 
   return (
     <div>
@@ -17,10 +21,10 @@ function App() {
       </div>
       <Switch>
         <Route path="/books">
-          <h2>books</h2>
+          <Books result={allBooks} />
         </Route>
         <Route path="/">
-          <Authors />
+          <Authors result={allAuthors} />
         </Route>
       </Switch>
     </div>

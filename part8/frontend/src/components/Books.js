@@ -1,31 +1,31 @@
 import React from 'react'
 
-const Authors = ({ result }) => {
+const Books = ({ result }) => {
   if (result.loading) {
     return <div>loading...</div>
   }
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>books</h2>
       <table>
         <thead>
           <tr>
             <td></td>
             <td>
-              <strong>born</strong>
+              <strong>author</strong>
             </td>
             <td>
-              <strong>books</strong>
+              <strong>published</strong>
             </td>
           </tr>
         </thead>
         <tbody>
-          {result.data.authors.map((author) => (
-            <tr key={author.id} >
-              <td>{author.name}</td>
-              <td>{author.born}</td>
-              <td>{author.bookCount}</td>
+          {result.data.books.map(book => (
+            <tr key={book.id}>
+              <td>{book.title}</td>
+              <td>{book.author}</td>
+              <td>{book.published}</td>
             </tr>
           ))}
         </tbody>
@@ -34,4 +34,4 @@ const Authors = ({ result }) => {
   )
 }
 
-export default Authors
+export default Books
