@@ -4,6 +4,7 @@ import { useQuery } from '@apollo/client'
 import { ALL_AUTHORS, ALL_BOOKS } from './query'
 import Authors from './components/Authors'
 import Books from './components/Books'
+import BookForm from './components/BookForm'
 
 function App() {
   const allAuthors = useQuery(ALL_AUTHORS)
@@ -18,10 +19,16 @@ function App() {
         <Link to="/books">
           <button>books</button>
         </Link>
+        <Link to="/book_form">
+          <button>add book</button>
+        </Link>
       </div>
       <Switch>
         <Route path="/books">
           <Books result={allBooks} />
+        </Route>
+        <Route path="/book_form">
+          <BookForm />
         </Route>
         <Route path="/">
           <Authors result={allAuthors} />
