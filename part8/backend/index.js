@@ -1,5 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server')
-const { v1: uuid } = require('uuid')
+const { ApolloServer, UserInputError, gql } = require('apollo-server')
 const mongoose = require('mongoose')
 const { MONGODB_URI } = require('./utils/config')
 const Book = require('./models/book')
@@ -40,7 +39,6 @@ const typeDefs = gql`
     bookCount: Int!
     authorCount: Int!
     allBooks(
-      author: String
       genre: String
     ): [Book!]!
     allAuthors: [Author!]!
@@ -65,7 +63,13 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: (_, args) => {
-      return Book.find({}).populate('author')
+      if (!args.genre) {
+        return Book.find({}).populate('author')
+      }
+
+      return Book
+        .find({ genres: { $in: [args.genre] } })
+        .populate('author')
     },
     allAuthors: () => {
       return Author.find({})
@@ -74,7 +78,7 @@ const resolvers = {
 
   Author: {
     bookCount: async (root) => {
-      const authorBooks = await Book.find({ author: { $in: [root] } })
+      const authorBooks = await Book.find({ author: root._id })
       return authorBooks.length
     }
   },
@@ -88,16 +92,28 @@ const resolvers = {
 
       const book = new Book({ ...args, author })
 
-      await author.save()
-      await book.save()
+      try {
+        await author.save()
+        await book.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
 
       return book
     },
     editAuthor: async (_, args) => {
       const author = await Author.findOne({ name: args.name })
 
-      author.born = args.setBornTo
-      await author.save()
+      try {
+        author.born = args.setBornTo
+        await author.save()
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: args
+        })
+      }
 
       return author
     }
