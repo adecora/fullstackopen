@@ -65,7 +65,7 @@ const resolvers = {
     bookCount: () => Book.collection.countDocuments(),
     authorCount: () => Author.collection.countDocuments(),
     allBooks: (_, args) => {
-      return Book.find({})
+      return Book.find({}).populate('author')
     },
     allAuthors: () => {
       return Author.find({})
@@ -73,8 +73,8 @@ const resolvers = {
   },
 
   Author: {
-    bookCount: (root) => {
-      const authorBooks = books.filter(b => b.author === root.name)
+    bookCount: async (root) => {
+      const authorBooks = await Book.find({ author: { $in: [root] } })
       return authorBooks.length
     }
   },
@@ -93,14 +93,13 @@ const resolvers = {
 
       return book
     },
-    editAuthor: (_, args) => {
-      const author = authors.find(a => a.name === args.name)
-      if (!author) {
-        return null
-      }
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      authors = authors.map(a => a.name !== args.name ? a : updatedAuthor)
-      return updatedAuthor
+    editAuthor: async (_, args) => {
+      const author = await Author.findOne({ name: args.name })
+
+      author.born = args.setBornTo
+      await author.save()
+
+      return author
     }
   }
 }
