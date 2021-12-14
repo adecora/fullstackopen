@@ -2,13 +2,28 @@ import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useMutation } from '@apollo/client'
 
-import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
+import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK, GENRE_BOOKS } from '../queries'
 
-const BookForm = () => {
+const BookForm = ({ user }) => {
   const [addBook] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
     onError: (error) => {
       console.error(error)
+    },
+    update: (store, response) => {
+      const dataInStore = store.readQuery({
+        query: GENRE_BOOKS,
+        variables: { genre: user.favoriteGenre }
+      })
+
+      store.writeQuery({
+        query: GENRE_BOOKS,
+        variables: { genre: user.favoriteGenre },
+        data: {
+          ...dataInStore,
+          recommended: [...dataInStore.recommended, response.data.addBook]
+        }
+      })
     }
   })
 

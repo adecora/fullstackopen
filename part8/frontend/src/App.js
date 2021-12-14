@@ -80,7 +80,10 @@ function App() {
           }
         </Route>
         <Route path="/book_form">
-          {!token ? <Redirect to="/login" /> : <BookForm />}
+          {!token
+            ? <Redirect to="/login" />
+            : <BookForm user={user} />
+          }
         </Route>
         <Route path="/recommend">
           {!token
