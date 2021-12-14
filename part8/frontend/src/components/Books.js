@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const Books = ({ result }) => {
+  const [genre, setGenre] = useState('all genres')
+
   if (result.loading) {
     return <div>loading...</div>
+  }
+
+  const genres = [
+    ...new Set([].concat(...result.data.books.map(b => b.genres))),
+    'all genres'
+  ]
+
+  const data = genre === 'all genres'
+    ? result.data.books
+    : result.data.books.filter(b => b.genres.includes(genre))
+
+  const changeGenre = ({ target }) => {
+    setGenre(target.innerHTML)
   }
 
   return (
     <div>
       <h2>books</h2>
+      <div>in genre <strong>{genre}</strong></div>
       <table>
         <thead>
           <tr>
@@ -21,7 +37,7 @@ const Books = ({ result }) => {
           </tr>
         </thead>
         <tbody>
-          {result.data.books.map(book => (
+          {data.map(book => (
             <tr key={book.id}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
@@ -30,6 +46,11 @@ const Books = ({ result }) => {
           ))}
         </tbody>
       </table>
+      {genres.map(genre => (
+        <button key={genre} onClick={changeGenre}>
+          {genre}
+        </button>
+      ))}
     </div>
   )
 }
