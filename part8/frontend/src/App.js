@@ -6,6 +6,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'
 import LoginForm from './components/LoginForm'
+import Recommend from './components/Recommend'
 
 import { ALL_AUTHORS, ALL_BOOKS, USER } from './queries'
 
@@ -84,7 +85,7 @@ function App() {
         <Route path="/recommend">
           {!token
             ? <Redirect to="/login" />
-            : <Books result={allBooks} user={user} />
+            : <Recommend user={user} />
           }
         </Route>
         <Route path="/">
