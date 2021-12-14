@@ -1,7 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-const Books = ({ result }) => {
+const Books = ({ result, user }) => {
   const [genre, setGenre] = useState('all genres')
+
+  useEffect(() => {
+    if (user) {
+      setGenre(user.favoriteGenre)
+    }
+  }, [user])
 
   if (result.loading) {
     return <div>loading...</div>
@@ -22,8 +28,21 @@ const Books = ({ result }) => {
 
   return (
     <div>
-      <h2>books</h2>
-      <div>in genre <strong>{genre}</strong></div>
+      {user
+        ? (
+          <>
+            <h2>recommendations</h2>
+            <div>books in your favorite genre <strong>{genre}</strong></div>
+          </>
+        )
+        : (
+          <>
+            <h2>books</h2>
+            <div>in genre <strong>{genre}</strong></div>
+          </>
+        )
+      }
+
       <table>
         <thead>
           <tr>
@@ -46,7 +65,7 @@ const Books = ({ result }) => {
           ))}
         </tbody>
       </table>
-      {genres.map(genre => (
+      {!user && genres.map(genre => (
         <button key={genre} onClick={changeGenre}>
           {genre}
         </button>

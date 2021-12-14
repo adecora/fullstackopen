@@ -4,7 +4,7 @@ import { useMutation } from '@apollo/client'
 import { useField } from '../hooks'
 import { LOGIN } from '../queries'
 
-const LoginForm = ({ setToken }) => {
+const LoginForm = ({ setToken, setUser }) => {
   const [login, result] = useMutation(LOGIN, {
     onError: (error) => {
       console.error(error)
@@ -19,6 +19,7 @@ const LoginForm = ({ setToken }) => {
       const token = result.data.login.value
       setToken(token)
       localStorage.setItem('library-user-token', token)
+      setUser()
     }
   }, [result.data])  // eslint-disable-line
 

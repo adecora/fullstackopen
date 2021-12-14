@@ -79,3 +79,12 @@ export const LOGIN = gql`
     }
   }
 `
+
+export const USER = gql`
+  query user {
+    user: me {
+      username
+      favoriteGenre
+    }
+  }
+`
