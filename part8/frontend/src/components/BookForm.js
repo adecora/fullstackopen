@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import { useField } from '../hooks'
 import { useMutation } from '@apollo/client'
+
 import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from '../queries'
 
 const BookForm = () => {
   const [addBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }]
+    refetchQueries: [{ query: ALL_AUTHORS }, { query: ALL_BOOKS }],
+    onError: (error) => {
+      console.error(error)
+    }
   })
 
   const { reset: resetTitle, ...title } = useField('text')
