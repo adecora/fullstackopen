@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Link, Switch, Route, Redirect } from 'react-router-dom'
-import { useApolloClient, useQuery, useLazyQuery } from '@apollo/client'
+import {
+  BrowserRouter as Router,
+  Link, Switch, Route, Redirect
+} from 'react-router-dom'
+import { useApolloClient, useQuery, useLazyQuery, useSubscription } from '@apollo/client'
 
 import Authors from './components/Authors'
 import Books from './components/Books'
@@ -8,7 +11,7 @@ import BookForm from './components/BookForm'
 import LoginForm from './components/LoginForm'
 import Recommend from './components/Recommend'
 
-import { ALL_AUTHORS, ALL_BOOKS, USER } from './queries'
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, USER } from './queries'
 
 function App() {
   const [token, setToken] = useState(null)
@@ -19,6 +22,13 @@ function App() {
   const allAuthors = useQuery(ALL_AUTHORS)
   const allBooks = useQuery(ALL_BOOKS)
   const [loadUser, { data }] = useLazyQuery(USER)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      console.log(subscriptionData)
+      window.alert(`Book added ${subscriptionData.data.bookAdded.title}`)
+    }
+  })
 
   useEffect(() => {
     const token = localStorage.getItem('library-user-token')
@@ -42,7 +52,7 @@ function App() {
   }
 
   return (
-    <div>
+    <Router>
       <div>
         <Link to="/">
           <button>authors</button>
@@ -95,7 +105,7 @@ function App() {
           <Authors result={allAuthors} />
         </Route>
       </Switch>
-    </div>
+    </Router>
   );
 }
 

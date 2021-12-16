@@ -1,28 +1,70 @@
 import { gql } from '@apollo/client'
 
+const AUTHOR_DETAILS = gql`
+  fragment AuthorDetails on Author {
+    id
+    name
+    born
+    bookCount
+  }
+`
+
+const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    id
+    title
+    published
+    author {
+      name
+    }
+    genres
+  }
+`
+
 export const ALL_AUTHORS = gql`
   query {
     authors: allAuthors {
-      id
-      name
-      born
-      bookCount
+      ...AuthorDetails
     }
   }
+  ${AUTHOR_DETAILS}
+`
+
+export const EDIT_AUTHOR = gql`
+  mutation editAuthor(
+    $name: String!
+    $born: Int!
+    ) {
+    editAuthor(
+      name: $name 
+      setBornTo: $born
+    ) {
+      ...AuthorDetails
+    }
+  }
+  ${AUTHOR_DETAILS}
 `
 
 export const ALL_BOOKS = gql`
   query {
     books: allBooks {
-      id
-      author {
-        name
-      }
-      genres
-      published
-      title
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
+`
+
+export const GENRE_BOOKS = gql`
+  query genreBooks (
+    $genre: String
+  ) {
+    recommended: allBooks (
+      genre: $genre
+    ) {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
 `
 
 export const CREATE_BOOK = gql`
@@ -38,32 +80,19 @@ export const CREATE_BOOK = gql`
       published: $published
       genres: $genres
       ) {
-        author {
-          name
-        }
-        genres
-        id
-        published
-        title
+        ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
-export const EDIT_AUTHOR = gql`
-  mutation editAuthor(
-    $name: String!
-    $born: Int!
-    ) {
-    editAuthor(
-      name: $name 
-      setBornTo: $born
-    ) {
-      name
-      born
-      id
-      bookCount
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `
 
 export const LOGIN = gql`
@@ -85,24 +114,6 @@ export const USER = gql`
     user: me {
       username
       favoriteGenre
-    }
-  }
-`
-
-export const GENRE_BOOKS = gql`
-  query genreBooks (
-    $genre: String
-  ) {
-    recommended: allBooks (
-      genre: $genre
-    ) {
-      id
-      author {
-        name
-      }
-      genres
-      published
-      title
     }
   }
 `

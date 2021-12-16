@@ -16,14 +16,16 @@ const BookForm = ({ user }) => {
         variables: { genre: user.favoriteGenre }
       })
 
-      store.writeQuery({
-        query: GENRE_BOOKS,
-        variables: { genre: user.favoriteGenre },
-        data: {
-          ...dataInStore,
-          recommended: [...dataInStore.recommended, response.data.addBook]
-        }
-      })
+      if (dataInStore && response.data.addBook.genres.includes(user.favoriteGenre)) {
+        store.writeQuery({
+          query: GENRE_BOOKS,
+          variables: { genre: user.favoriteGenre },
+          data: {
+            ...dataInStore,
+            recommended: [...dataInStore.recommended, response.data.addBook]
+          }
+        })
+      }
     }
   })
 
