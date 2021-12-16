@@ -11,13 +11,17 @@
   "author": "Alejandro Varela de Cora",
   "license": "MIT",
   "dependencies": {
-    "apollo-server": "^3.5.0",
+    "@graphql-tools/schema": "^8.3.1",
     "apollo-server-core": "^3.5.0",
+    "apollo-server-express": "^3.5.0",
     "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "graphql": "^15.8.0",
+    "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.15",
-    "mongoose-unique-validator": "^2.0.3"
+    "mongoose-unique-validator": "^2.0.3",
+    "subscriptions-transport-ws": "^0.11.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
