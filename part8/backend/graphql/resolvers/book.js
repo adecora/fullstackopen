@@ -31,6 +31,7 @@ const resolvers = {
       }
 
       const book = new Book({ ...args, author })
+      author.books = author.books.concat(book)
 
       try {
         await author.save()

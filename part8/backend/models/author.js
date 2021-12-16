@@ -9,6 +9,12 @@ const schema = new mongoose.Schema({
     minlength: 4
   },
   born: Number,
+  books: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Book'
+    }
+  ]
 })
 
 schema.plugin(uniqueValidator)
