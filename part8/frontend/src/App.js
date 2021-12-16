@@ -5,13 +5,15 @@ import {
 } from 'react-router-dom'
 import { useApolloClient, useQuery, useLazyQuery, useSubscription } from '@apollo/client'
 
+import updateCache from './utils/updateCache'
+
 import Authors from './components/Authors'
 import Books from './components/Books'
 import BookForm from './components/BookForm'
 import LoginForm from './components/LoginForm'
 import Recommend from './components/Recommend'
 
-import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, USER } from './queries'
+import { ALL_AUTHORS, ALL_BOOKS, GENRE_BOOKS, BOOK_ADDED, USER } from './queries'
 
 function App() {
   const [token, setToken] = useState(null)
@@ -21,14 +23,8 @@ function App() {
 
   const allAuthors = useQuery(ALL_AUTHORS)
   const allBooks = useQuery(ALL_BOOKS)
-  const [loadUser, { data }] = useLazyQuery(USER)
-
-  useSubscription(BOOK_ADDED, {
-    onSubscriptionData: ({ subscriptionData }) => {
-      console.log(subscriptionData)
-      window.alert(`Book added ${subscriptionData.data.bookAdded.title}`)
-    }
-  })
+  const [loadUser, { data: userData }] = useLazyQuery(USER)
+  const [loadBooks, recommend] = useLazyQuery(GENRE_BOOKS)
 
   useEffect(() => {
     const token = localStorage.getItem('library-user-token')
@@ -39,10 +35,18 @@ function App() {
   }, [loadUser])
 
   useEffect(() => {
-    if (data && data.user !== null) {
-      setUser(data.user)
+    if (userData && userData.user !== null) {
+      setUser(userData.user)
     }
-  }, [data])  // eslint-disable-line
+  }, [userData])  // eslint-disable-line
+
+  useEffect(() => {
+    if (user) {
+      loadBooks({
+        variables: { genre: user.favoriteGenre }
+      })
+    }
+  }, [loadBooks, user])
 
   const logout = () => {
     setToken(null)
@@ -50,6 +54,15 @@ function App() {
     localStorage.clear()
     client.resetStore()
   }
+
+  const updateCacheWith = updateCache(client, user)
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      window.alert(`Book added ${subscriptionData.data.bookAdded.title}`)
+      updateCacheWith(subscriptionData.data.bookAdded)
+    }
+  })
 
   return (
     <Router>
@@ -92,13 +105,13 @@ function App() {
         <Route path="/book_form">
           {!token
             ? <Redirect to="/login" />
-            : <BookForm user={user} />
+            : <BookForm updateCacheWith={updateCacheWith} user={user} />
           }
         </Route>
         <Route path="/recommend">
           {!token
             ? <Redirect to="/login" />
-            : <Recommend user={user} />
+            : <Recommend user={user} recommend={recommend} />
           }
         </Route>
         <Route path="/">
