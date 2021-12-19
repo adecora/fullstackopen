@@ -1,4 +1,4 @@
-interface studyMetrics {
+interface outputMetrics {
     periodLength: number;
     trainingDays: number;
     success: boolean;
@@ -8,7 +8,31 @@ interface studyMetrics {
     average: number;
 }
 
-const calculateExercises = (study: Array<number>, target: number): studyMetrics => {
+interface inputMetrics {
+    target: number;
+    hours: Array<number>;
+}
+
+const processArguments = (args: Array<string>): inputMetrics => {
+    if (args.length < 4) throw new Error(`Bad usage: npm run calculateExercises <target> <study_hours>...
+    supplied at least one <study_hours>.`);
+
+    const arguments = [];
+    for (let arg of args.slice(2)) {
+        const value = Number(arg);
+
+        if (isNaN(value)) throw new Error('Provided values were not numbers!');
+        if (value > 24) throw new Error(`${value} not too many hours in a day.`);
+        arguments.push(value);
+    }
+
+    return {
+        target: arguments.shift(),
+        hours: arguments
+    }
+}
+
+const calculateExercises = (study: Array<number>, target: number): outputMetrics => {
     const periodLength = study.length
     const trainingDays = study.filter(h => h !== 0).length
     const average = study.reduce((acc, act) => acc + act) / periodLength
@@ -38,4 +62,13 @@ const calculateExercises = (study: Array<number>, target: number): studyMetrics 
     }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+try {
+    const { target, hours } = processArguments(process.argv);
+    console.log(calculateExercises(hours, target));
+} catch (error: unknown) {
+    let errorMessage = 'Something bad happens.';
+    if (error instanceof Error) {
+        errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
+}
