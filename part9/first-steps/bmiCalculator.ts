@@ -17,7 +17,7 @@ const parseArguments = (args: Array<string>): bodyMassValues => {
 
 }
 
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
     const bmi: number = Number((weight / (height / 100) ** 2).toFixed(1));
 
     if (bmi < 16.0) {
@@ -35,13 +35,15 @@ const calculateBmi = (height: number, weight: number): string => {
     }
 }
 
-try {
-    const { height, weight } = parseArguments(process.argv);
-    console.log(calculateBmi(height, weight));
-} catch (error: unknown) {
-    let errorMessage = 'Something went wrong.';
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
+if (typeof require !== undefined && require.main === module) {
+    try {
+        const { height, weight } = parseArguments(process.argv);
+        console.log(calculateBmi(height, weight));
+    } catch (error: unknown) {
+        let errorMessage = 'Something went wrong.';
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        console.log(errorMessage);
     }
-    console.log(errorMessage);
 }
