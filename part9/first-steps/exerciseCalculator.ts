@@ -17,18 +17,18 @@ const processArguments = (args: Array<string>): inputMetrics => {
     if (args.length < 4) throw new Error(`Bad usage: npm run calculateExercises <target> <study_hours>...
     supplied at least one <study_hours>.`);
 
-    const arguments = [];
+    const metrics: Array<number> = [];
     for (let arg of args.slice(2)) {
         const value = Number(arg);
 
         if (isNaN(value)) throw new Error('Provided values were not numbers!');
         if (value > 24) throw new Error(`${value} not too many hours in a day.`);
-        arguments.push(value);
+        metrics.push(value);
     }
 
     return {
-        target: arguments.shift(),
-        hours: arguments
+        target: metrics[0],
+        hours: metrics.slice(1)
     }
 }
 
