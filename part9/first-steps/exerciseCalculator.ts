@@ -32,7 +32,7 @@ const processArguments = (args: Array<string>): inputMetrics => {
     };
 };
 
-const calculateExercises = (study: Array<number>, target: number): outputMetrics => {
+export const calculateExercises = (study: Array<number>, target: number): outputMetrics => {
     const periodLength = study.length;
     const trainingDays = study.filter(h => h !== 0).length;
     const average = study.reduce((acc, act) => acc + act) / periodLength;
@@ -62,13 +62,15 @@ const calculateExercises = (study: Array<number>, target: number): outputMetrics
     };
 };
 
-try {
-    const { target, hours } = processArguments(process.argv);
-    console.log(calculateExercises(hours, target));
-} catch (error: unknown) {
-    let errorMessage = 'Something bad happens.';
-    if (error instanceof Error) {
-        errorMessage += ' Error: ' + error.message;
+if (typeof require !== undefined && require.main === module) {
+    try {
+        const { target, hours } = processArguments(process.argv);
+        console.log(calculateExercises(hours, target));
+    } catch (error: unknown) {
+        let errorMessage = 'Something bad happens.';
+        if (error instanceof Error) {
+            errorMessage += ' Error: ' + error.message;
+        }
+        console.log(errorMessage);
     }
-    console.log(errorMessage);
 }
