@@ -18,7 +18,7 @@ const processArguments = (args: Array<string>): inputMetrics => {
     supplied at least one <study_hours>.`);
 
     const metrics: Array<number> = [];
-    for (let arg of args.slice(2)) {
+    for (const arg of args.slice(2)) {
         const value = Number(arg);
 
         if (isNaN(value)) throw new Error('Provided values were not numbers!');
@@ -29,13 +29,13 @@ const processArguments = (args: Array<string>): inputMetrics => {
     return {
         target: metrics[0],
         hours: metrics.slice(1)
-    }
-}
+    };
+};
 
 const calculateExercises = (study: Array<number>, target: number): outputMetrics => {
-    const periodLength = study.length
-    const trainingDays = study.filter(h => h !== 0).length
-    const average = study.reduce((acc, act) => acc + act) / periodLength
+    const periodLength = study.length;
+    const trainingDays = study.filter(h => h !== 0).length;
+    const average = study.reduce((acc, act) => acc + act) / periodLength;
     const success = average >= target;
     let rating;
 
@@ -59,8 +59,8 @@ const calculateExercises = (study: Array<number>, target: number): outputMetrics
         rating,
         success,
         ratingDescription
-    }
-}
+    };
+};
 
 try {
     const { target, hours } = processArguments(process.argv);

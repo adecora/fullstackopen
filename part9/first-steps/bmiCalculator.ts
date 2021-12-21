@@ -10,15 +10,15 @@ const parseArguments = (args: Array<string>): bodyMassValues => {
         return {
             height: Number(args[2]),
             weight: Number(args[3])
-        }
+        };
     } else {
         throw new Error('Provided values were not numbers!');
     }
 
-}
+};
 
 export const calculateBmi = (height: number, weight: number): string => {
-    const bmi: number = Number((weight / (height / 100) ** 2).toFixed(1));
+    const bmi = Number((weight / (height / 100) ** 2).toFixed(1));
 
     if (bmi < 16.0) {
         return 'Underweight (Severe thinness)';
@@ -33,7 +33,7 @@ export const calculateBmi = (height: number, weight: number): string => {
     } else {
         return 'Obese (Class III)';
     }
-}
+};
 
 if (typeof require !== undefined && require.main === module) {
     try {
