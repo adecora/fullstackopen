@@ -20,8 +20,12 @@ const App = () => {
           `${apiBaseUrl}/patients`
         );
         dispatch({ type: "SET_PATIENT_LIST", payload: patientListFromApi });
-      } catch (e) {
-        console.error(e);
+      } catch (error) {
+        let errorMessage = 'Something went wrong.';
+        if (axios.isAxiosError(error) && error.response) {
+          errorMessage += ` Error: ${error.response.data.message as string}`;
+        }
+        console.error(errorMessage);
       }
     };
     void fetchPatientList();

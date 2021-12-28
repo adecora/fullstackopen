@@ -13,6 +13,11 @@ const getEntries = (): PatientView[] => {
     }));
 };
 
+const findById = (id: string): PatientEntry | undefined => {
+    const patient = patients.find(patient => patient.id === id);
+    return patient;
+};
+
 const addEntry = (entry: NewPatientEntry): PatientEntry => {
     const id = uuid();
 
@@ -27,5 +32,6 @@ const addEntry = (entry: NewPatientEntry): PatientEntry => {
 
 export default {
     getEntries,
+    findById,
     addEntry
 };
