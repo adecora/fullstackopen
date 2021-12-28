@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { Icon, Card, SemanticICONS } from "semantic-ui-react";
 
 import { apiBaseUrl } from "../constants";
-import { useStateValue } from "../state";
+import { useStateValue, setPatientDetail } from "../state";
 import { Patient, Gender } from "../types";
 import { assertNever } from "../utils";
 
@@ -15,10 +15,10 @@ const PatientPage = () => {
     React.useEffect(() => {
         const fetchPatientDetail = async () => {
             try {
-                const { data: patientDetail } = await axios.get<Patient>(
+                const { data: patientDetailFromApi } = await axios.get<Patient>(
                     `${apiBaseUrl}/patients/${id}`
                 );
-                dispatch({ type: "SET_PATIENT_DETAIL", payload: patientDetail });
+                dispatch(setPatientDetail(patientDetailFromApi));
             } catch (error) {
                 let errorMessage = 'Something went wrong.';
                 if (axios.isAxiosError(error) && error.response) {
@@ -44,9 +44,9 @@ const PatientPage = () => {
     };
 
     return (
-        <div>
+        <div style={{ width: 300 }}>
             {patientDetail &&
-                (<Card
+                (<Card fluid
                     header={<h1>
                         {patientDetail.name}
                         <Icon name={genderIcon(patientDetail.gender)} />
