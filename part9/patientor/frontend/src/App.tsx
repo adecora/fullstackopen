@@ -8,6 +8,7 @@ import { useStateValue } from "./state";
 import { Patient } from "./types";
 
 import PatientListPage from "./PatientListPage";
+import PatientPage from "./PatientPage";
 
 const App = () => {
   const [, dispatch] = useStateValue();
@@ -15,6 +16,7 @@ const App = () => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
+      console.log('fetching patients list...');
       try {
         const { data: patientListFromApi } = await axios.get<Patient[]>(
           `${apiBaseUrl}/patients`
@@ -23,7 +25,7 @@ const App = () => {
       } catch (error) {
         let errorMessage = 'Something went wrong.';
         if (axios.isAxiosError(error) && error.response) {
-          errorMessage += ` Error: ${error.response.data.message as string}`;
+          errorMessage += ` Error: ${error.response.data as string}`;
         }
         console.error(errorMessage);
       }
@@ -41,13 +43,16 @@ const App = () => {
           </Button>
           <Divider hidden />
           <Switch>
+            <Route path="/patients/:id">
+              <PatientPage />
+            </Route>
             <Route path="/">
               <PatientListPage />
             </Route>
           </Switch>
         </Container>
       </Router>
-    </div>
+    </div >
   );
 };
 
