@@ -11,6 +11,7 @@ import { assertNever } from "../utils";
 const PatientPage = () => {
     const { id } = useParams<{ id: string }>();
     const [{ patientDetail }, dispatch] = useStateValue();
+    console.log(patientDetail, patientDetail?.entries);
 
     React.useEffect(() => {
         const fetchPatientDetail = async () => {
@@ -44,16 +45,31 @@ const PatientPage = () => {
     };
 
     return (
-        <div style={{ width: 300 }}>
+        <div>
             {patientDetail &&
-                (<Card fluid
-                    header={<h1>
-                        {patientDetail.name}
-                        <Icon name={genderIcon(patientDetail.gender)} />
-                    </h1>}
-                    meta={`ssn: ${patientDetail.ssn || 'no info'}`}
-                    description={patientDetail.occupation}
-                />)}
+                (<div>
+                    <Card
+                        header={<h1>
+                            {patientDetail.name}
+                            <Icon name={genderIcon(patientDetail.gender)} />
+                        </h1>}
+                        meta={`ssn: ${patientDetail.ssn || 'no info'}`}
+                        description={patientDetail.occupation}
+                    />
+                    <h2>entries</h2>
+                    {patientDetail.entries &&
+                        patientDetail.entries.map(entry => (
+                            <div key={entry.id}>
+                                {entry.date} {entry.description}
+                                {entry.diagnosisCodes &&
+                                    (<ul>
+                                        {entry.diagnosisCodes.map(code => (
+                                            <li key={code}>{code}</li>
+                                        ))}
+                                    </ul>)}
+                            </div>))
+                    }
+                </div>)}
         </div>
     );
 };
