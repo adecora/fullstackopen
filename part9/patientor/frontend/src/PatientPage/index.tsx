@@ -5,12 +5,18 @@ import { Icon, Card, SemanticICONS } from "semantic-ui-react";
 
 import { apiBaseUrl } from "../constants";
 import { useStateValue, setPatientDetail } from "../state";
-import { Patient, Gender } from "../types";
-import { assertNever } from "../utils";
+import { Patient } from "../types";
+import EntryDetails from "../EntryDetails";
+
+interface GenderIcon {
+    "male": SemanticICONS,
+    "female": SemanticICONS,
+    "other": SemanticICONS
+}
 
 const PatientPage = () => {
     const { id } = useParams<{ id: string }>();
-    const [{ diagnoses, patientDetail }, dispatch] = useStateValue();
+    const [{ patientDetail }, dispatch] = useStateValue();
 
     React.useEffect(() => {
         const fetchPatientDetail = async () => {
@@ -30,45 +36,38 @@ const PatientPage = () => {
         id !== patientDetail?.id && void fetchPatientDetail();
     }, [dispatch]);
 
-    const genderIcon = (gender: Gender): SemanticICONS => {
-        switch (gender) {
-            case Gender.Male:
-                return "mars";
-            case Gender.Female:
-                return "venus";
-            case Gender.Other:
-                return "genderless";
-            default:
-                return assertNever(gender);
-        }
+    const genderIcon: GenderIcon = {
+        "male": "mars",
+        "female": "venus",
+        "other": "genderless"
     };
 
     return (
         <div>
             {patientDetail &&
                 (<div>
-                    <Card
-                        header={<h1>
-                            {patientDetail.name}
-                            <Icon name={genderIcon(patientDetail.gender)} />
-                        </h1>}
-                        meta={`ssn: ${patientDetail.ssn || 'no info'}`}
-                        description={patientDetail.occupation}
-                    />
+                    <Card>
+                        <Card.Content>
+                            <Card.Header>
+                                {patientDetail.name} {" "}
+                                <Icon name={genderIcon[patientDetail.gender]} size="large" />
+                            </Card.Header>
+                            <Card.Meta>
+                                ssn: {patientDetail.ssn}
+                            </Card.Meta>
+                            <Card.Description>
+                                {patientDetail.occupation}
+                            </Card.Description>
+                        </Card.Content>
+                    </Card>
                     <h2>entries</h2>
                     {patientDetail.entries &&
                         patientDetail.entries.map(entry => (
-                            <div key={entry.id}>
-                                {entry.date} {entry.description}
-                                {entry.diagnosisCodes &&
-                                    (<ul>
-                                        {entry.diagnosisCodes.map(code => (
-                                            <li key={code}>{code} {diagnoses[code]?.name}</li>
-                                        ))}
-                                    </ul>)}
-                            </div>))
+                            <EntryDetails key={entry.id} entry={entry} />
+                        ))
                     }
-                </div>)}
+                </div>)
+            }
         </div>
     );
 };
