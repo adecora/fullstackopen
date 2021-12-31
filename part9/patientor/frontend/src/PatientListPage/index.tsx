@@ -32,10 +32,12 @@ const PatientListPage = () => {
       dispatch(addPatient(newPatient));
       closeModal();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data || 'Unknown Error');
-        setError(error.response?.data?.error || 'Unknown error');
+      let errorMessage = 'Something went wrong.';
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data);
+        errorMessage += ` Error: ${error.response.data as string}`;
       }
+      setError(errorMessage);
     }
   };
 
