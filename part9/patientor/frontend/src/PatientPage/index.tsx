@@ -98,11 +98,13 @@ const PatientPage = () => {
                         </Card.Content>
                     </Card>
                     <h2>entries</h2>
-                    {patientDetail.entries &&
-                        patientDetail.entries.map(entry => (
-                            <EntryDetails key={entry.id} entry={entry} />
-                        ))
-                    }
+                    <Card.Group>
+                        {patientDetail.entries &&
+                            patientDetail.entries.map(entry => (
+                                <EntryDetails key={entry.id} entry={entry} />
+                            ))
+                        }
+                    </Card.Group>
                 </div>)
             }
         </div>

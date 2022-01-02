@@ -18,7 +18,7 @@ export type TypeOption = {
 type SelectFieldProps = {
   name: string;
   label: string;
-  options: GenderOption[] | TypeOption[];
+  options: GenderOption[];
 };
 
 export const SelectField = ({
@@ -56,6 +56,7 @@ export const TextField = ({
     </div>
   </Form.Field>
 );
+
 
 /*
   for exercises 9.24.-
