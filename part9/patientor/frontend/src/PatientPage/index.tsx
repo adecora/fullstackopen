@@ -1,12 +1,14 @@
 import React from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { Icon, Card, SemanticICONS } from "semantic-ui-react";
+import { Icon, Card, SemanticICONS, Button } from "semantic-ui-react";
 
 import { apiBaseUrl } from "../constants";
-import { useStateValue, setPatientDetail } from "../state";
-import { Patient } from "../types";
+import { useStateValue, setPatientDetail, addEntry } from "../state";
+import { Patient, Entry } from "../types";
 import EntryDetails from "../EntryDetails";
+import AddEntryModal from "../AddEntryModal";
+import { EntryWithoutId } from "../AddEntryModal/AddEntryForm";
 
 interface GenderIcon {
     "male": SemanticICONS,
@@ -17,6 +19,8 @@ interface GenderIcon {
 const PatientPage = () => {
     const { id } = useParams<{ id: string }>();
     const [{ patientDetail }, dispatch] = useStateValue();
+
+    const [modalOpen, setModalOpen] = React.useState<boolean>(false);
 
     React.useEffect(() => {
         const fetchPatientDetail = async () => {
@@ -35,6 +39,27 @@ const PatientPage = () => {
         };
         id !== patientDetail?.id && void fetchPatientDetail();
     }, [dispatch]);
+
+    const openModal = (): void => setModalOpen(true);
+    const closeModal = (): void => setModalOpen(false);
+
+    const submitNewEntry = async (values: EntryWithoutId) => {
+        try {
+            const { data: newEntry } = await axios.post<Entry>(
+                `${apiBaseUrl}/patients/${id}/entries`,
+                values
+            );
+            dispatch(addEntry(patientDetail as Patient, newEntry));
+            closeModal();
+        } catch (error: unknown) {
+            let errorMessage = 'Something went wrong.';
+            if (axios.isAxiosError(error) && error.response) {
+                console.error(error.response.data);
+                errorMessage += ` Error: ${error.response.data as string}`;
+            }
+            console.log(errorMessage);
+        }
+    };
 
     const genderIcon: GenderIcon = {
         "male": "mars",
@@ -58,6 +83,14 @@ const PatientPage = () => {
                             <Card.Description>
                                 {patientDetail.occupation}
                             </Card.Description>
+                        </Card.Content>
+                        <Card.Content extra>
+                            <AddEntryModal
+                                modalOpen={modalOpen}
+                                onSubmit={submitNewEntry}
+                                onClose={closeModal}
+                            />
+                            <Button onClick={() => openModal()}>Add New Entry</Button>
                         </Card.Content>
                     </Card>
                     <h2>entries</h2>
