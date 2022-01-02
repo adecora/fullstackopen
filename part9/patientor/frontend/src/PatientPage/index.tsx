@@ -21,6 +21,7 @@ const PatientPage = () => {
     const [{ patientDetail }, dispatch] = useStateValue();
 
     const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+    const [error, setError] = React.useState<string | undefined>();
 
     React.useEffect(() => {
         const fetchPatientDetail = async () => {
@@ -41,7 +42,10 @@ const PatientPage = () => {
     }, [dispatch]);
 
     const openModal = (): void => setModalOpen(true);
-    const closeModal = (): void => setModalOpen(false);
+    const closeModal = (): void => {
+        setModalOpen(false);
+        setError(undefined);
+    };
 
     const submitNewEntry = async (values: EntryWithoutId) => {
         try {
@@ -54,10 +58,9 @@ const PatientPage = () => {
         } catch (error: unknown) {
             let errorMessage = 'Something went wrong.';
             if (axios.isAxiosError(error) && error.response) {
-                console.error(error.response.data);
-                errorMessage += ` Error: ${error.response.data as string}`;
+                errorMessage = `${error.response.data as string}`;
             }
-            console.log(errorMessage);
+            setError(errorMessage);
         }
     };
 
@@ -88,6 +91,7 @@ const PatientPage = () => {
                             <AddEntryModal
                                 modalOpen={modalOpen}
                                 onSubmit={submitNewEntry}
+                                error={error}
                                 onClose={closeModal}
                             />
                             <Button onClick={() => openModal()}>Add New Entry</Button>
