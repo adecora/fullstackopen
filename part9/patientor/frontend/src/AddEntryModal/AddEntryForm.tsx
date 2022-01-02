@@ -5,6 +5,7 @@ import { Entry } from "../types";
 import { TypeOption } from "../AddPatientModal/FormField";
 import HealthCheckForm from "./HealthCheckForm";
 import OccupationalHealthcareForm from "./OccupationalHealthcareForm";
+import HospitalForm from "./HospitalForm";
 
 type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
 export type EntryWithoutId = UnionOmit<Entry, 'id'>;
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
-    const [type, setType] = React.useState<Entry['type']>("OccupationalHealthcare");
+    const [type, setType] = React.useState<Entry['type']>("Hospital");
 
     const changeType = ({ target: { value } }: { target: { value: Entry['type'] } }) => {
         setType(value);
@@ -41,7 +42,7 @@ const AddEntryForm = ({ onSubmit, onCancel }: Props) => {
             {type === "HealthCheck"
                 ? <HealthCheckForm onSubmit={onSubmit} onCancel={onCancel} />
                 : type === "Hospital"
-                    ? <div>Hospital</div>
+                    ? <HospitalForm onSubmit={onSubmit} onCancel={onCancel} />
                     : <OccupationalHealthcareForm onSubmit={onSubmit} onCancel={onCancel} />
             }
         </div>
